@@ -13,6 +13,7 @@
       --bg: #FAF9F1;        /* m-paper  */
       --ink: #114296;       /* m-ink / m-blue */
       --ink-dark: #0B2F6E;  /* m-blue-dark — link hover */
+      --ink-light: #1B68E4; /* lighter blue — pressed state, 5.06:1 with white text */
       --muted: #5A5F68;     /* m-ink-soft, darkened to 6.08:1 on --bg for body copy */
       --faint: #686E79;     /* secondary metadata, 4.86:1 on --bg */
       --panel: #F0EFE4;     /* m-cream */
@@ -109,6 +110,7 @@
     /* download button */
     .badge { display: inline-flex; align-items: center; gap: 10px; background: var(--ink); color: #fff; padding: 12px 22px; border-radius: 14px; transition: transform .15s ease, opacity .15s ease; }
     .badge:hover { transform: translateY(-2px); opacity: 0.9; }
+    .badge:active { background: var(--ink-light); color: #fff; opacity: 1; }
     .badge svg { width: 24px; height: 24px; flex: none; }
     .badge .b-txt { text-align: left; line-height: 1.1; white-space: nowrap; }
     .badge .b-small { font-size: 0.62rem; letter-spacing: 0.03em; opacity: 0.85; display: block; }
