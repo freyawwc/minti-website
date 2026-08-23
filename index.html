@@ -7,16 +7,19 @@
   <meta name="description" content="minti is real friend social — the app that starts when you put your phone down. Made by Circle Five Studios." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Domine:wght@400..700&family=Fredoka:wght@500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Caudex:wght@400;700&family=Nanum+Pen+Script&display=swap" rel="stylesheet" />
   <style>
     :root {
-      --bg: #ffffff;
-      --ink: #0b0b0c;
-      --muted: #6a6a6e;
-      --faint: #9a9a9e;
-      --panel: #f4f3f1;
-      --serif: 'Domine', Georgia, 'Times New Roman', serif;
-      --sans: -apple-system, system-ui, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', sans-serif;
+      --bg: #FAF9F1;        /* m-paper  */
+      --ink: #114296;       /* m-ink / m-blue */
+      --ink-dark: #0B2F6E;  /* m-blue-dark — link hover */
+      --muted: #7C8087;     /* m-ink-soft */
+      --faint: #9AA0A6;
+      --panel: #F0EFE4;     /* m-cream */
+      --accent: #F66E22;    /* m-orange */
+      --serif: 'Caudex', Georgia, 'Times New Roman', serif;
+      --hand: 'Nanum Pen Script', 'Segoe Script', cursive;
+      --sans: -apple-system, 'SF Pro Text', 'SF Pro Display', system-ui, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -35,10 +38,10 @@
     /* ---------- Top bar ---------- */
     .topbar { flex: none; display: flex; align-items: center; justify-content: space-between; padding: 22px clamp(20px, 4vw, 44px); }
     .brand { display: flex; align-items: center; gap: 9px; font-weight: 700; font-size: 1.12rem; letter-spacing: -0.01em; }
-    .logo { display: inline-flex; align-items: center; font-family: 'Fredoka', 'Baloo 2', var(--sans); font-weight: 600; font-size: 1.6rem; line-height: 1; letter-spacing: -0.01em; }
-    .logo .lm, .logo .lt { color: #2b56f5; }
+    .logo { display: inline-flex; align-items: center; font-family: var(--serif); font-weight: 700; font-size: 1.6rem; line-height: 1; letter-spacing: -0.01em; }
+    .logo .lm, .logo .lt { color: var(--ink); }
     .logo .lc { display: inline-flex; flex-direction: column; justify-content: center; gap: 0.12em; margin: 0 0.11em; }
-    .logo .lc i { width: 0.2em; height: 0.2em; border-radius: 50%; background: #e5333f; }
+    .logo .lc i { width: 0.2em; height: 0.2em; border-radius: 50%; background: var(--accent); }
     .topbar nav { display: flex; gap: 26px; font-size: 0.95rem; color: var(--muted); font-weight: 500; }
     .topbar nav a:hover { color: var(--ink); }
     @media (max-width: 480px) { .topbar nav { gap: 16px; font-size: 0.9rem; } }
@@ -46,7 +49,7 @@
     /* ---------- Stage (center) ---------- */
     .main { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: clamp(20px, 3.5vh, 40px); padding: 0 20px; text-align: center; min-height: 0; }
     .headline { font-family: var(--serif); font-weight: 400; font-size: clamp(2rem, 5.4vw, 4.2rem); line-height: 1.06; letter-spacing: -0.01em; }
-    .headline .it { font-style: italic; }
+    .headline .it { color: var(--accent); }
 
     /* ---------- 3D flipping phone ---------- */
     .stage { perspective: 1300px; perspective-origin: 50% 42%; height: min(58vh, 560px); display: grid; place-items: center; }
