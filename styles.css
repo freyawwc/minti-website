@@ -245,7 +245,6 @@ p.murmur { margin: 26px 0 12px; }   /* block murmurs need the breathing room .st
 .cta { text-align: center; }
 .cta h2 { font-size: clamp(2.2rem, 5vw, 3.6rem); margin-bottom: 16px; }
 .cta p { color: var(--muted); max-width: 46ch; margin: 0 auto 30px; font-size: 1.12rem; }
-.cta .stanza p { margin: 0; }
 
 /* letter (postkitty) */
 .letter { background: var(--panel); border-radius: 20px; padding: 34px 30px; box-shadow: 0 30px 60px -40px rgba(0,0,0,0.35); position: relative; max-width: 380px; margin: 0 auto; transform: rotate(-2deg); }
