@@ -16,11 +16,12 @@ import os
 import re
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-PAGES = ["index", "minti", "about", "terms", "privacy"]
+PAGES = ["index", "minti", "about", "company", "terms", "privacy"]
 LABELS = {
     "index": "Home",
     "minti": "minti",
-    "about": "company",
+    "about": "about",
+    "company": "company",
     "terms": "Terms",
     "privacy": "Privacy",
 }

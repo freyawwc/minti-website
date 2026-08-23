@@ -73,9 +73,27 @@ h2.h { font-size: clamp(2rem, 4.4vw, 3.1rem); margin-bottom: 18px; }
 /* steps */
 .steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 40px; margin-top: 56px; text-align: left; }
 @media (max-width: 760px) { .steps { grid-template-columns: 1fr; gap: 36px; } }
+.steps-4 { grid-template-columns: repeat(4, 1fr); }
+@media (max-width: 980px) { .steps-4 { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 560px) { .steps-4 { grid-template-columns: 1fr; } }
 .step .n { font-family: var(--serif); font-size: 2.4rem; color: var(--faint); margin-bottom: 10px; }
 .step h4 { font-size: 1.4rem; margin-bottom: 8px; }
 .step p { color: var(--muted); }
+
+/* chapter mark: a small brand glyph used as a section-break ornament */
+.chapter-mark { padding: 44px 0; }
+.chapter-mark .logo { font-size: 2.4rem; }
+
+/* stanza: tight-spaced stacked lines (poem-like pacing) */
+.stanza { display: flex; flex-direction: column; gap: 6px; margin: 20px 0; }
+.stanza p { margin: 0; color: var(--muted); font-size: 1.08rem; }
+
+/* stats row */
+.stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 40px; margin-top: 52px; text-align: center; }
+@media (max-width: 760px) { .stats { grid-template-columns: 1fr; gap: 36px; } }
+.stat-label { font-size: 0.8rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--faint); font-weight: 600; margin-bottom: 12px; }
+.stat-num { font-family: var(--serif); font-size: clamp(2.6rem, 6vw, 3.6rem); color: var(--accent); line-height: 1; margin-bottom: 10px; }
+.stat-caption { color: var(--muted); }
 
 /* split */
 .split { display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: center; }
@@ -203,6 +221,7 @@ h2.h { font-size: clamp(2rem, 4.4vw, 3.1rem); margin-bottom: 18px; }
 .cta { text-align: center; }
 .cta h2 { font-size: clamp(2.2rem, 5vw, 3.6rem); margin-bottom: 16px; }
 .cta p { color: var(--muted); max-width: 46ch; margin: 0 auto 30px; font-size: 1.12rem; }
+.cta .stanza p { margin: 0; }
 
 /* letter (postkitty) */
 .letter { background: var(--panel); border-radius: 20px; padding: 34px 30px; box-shadow: 0 30px 60px -40px rgba(0,0,0,0.35); position: relative; max-width: 380px; margin: 0 auto; transform: rotate(-2deg); }
