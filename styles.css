@@ -215,8 +215,13 @@ h2.h { font-size: clamp(2rem, 4.4vw, 3.1rem); margin-bottom: 18px; }
 /* value list */
 .values { display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; margin-top: 52px; text-align: left; }
 @media (max-width: 760px) { .values { grid-template-columns: 1fr; gap: 28px; } }
+.values-4 { grid-template-columns: repeat(4, 1fr); }
+@media (max-width: 980px) { .values-4 { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 560px) { .values-4 { grid-template-columns: 1fr; } }
 .value h4 { font-size: 1.3rem; margin-bottom: 8px; }
 .value p { color: var(--muted); }
+.value .stanza { margin: 0 0 10px; }
+.value .stanza p { font-size: 1rem; }
 
 /* cta */
 .cta { text-align: center; }
