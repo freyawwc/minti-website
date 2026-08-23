@@ -1,0 +1,313 @@
+<title>minti Site Preview</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+<style>
+  /* Shell palette: warm neutrals pulled toward the site's own #ec5230 so the
+     harness reads as related to minti but never competes with the page inside. */
+  :root {
+    --ground: #e9e6e1;
+    --bar: #fcfbfa;
+    --ink: #1c1a18;
+    --muted: #7b746c;
+    --line: #d9d5ce;
+    --sunk: #dedad4;
+    --accent: #ec5230;
+    --on-accent: #ffffff;
+    --shadow: 0 1px 2px rgba(28,26,24,.06), 0 18px 40px rgba(28,26,24,.13);
+    --ui: 'IBM Plex Sans', ui-sans-serif, system-ui, 'Segoe UI', sans-serif;
+  }
+  :root:not([data-theme="light"]) {
+    color-scheme: light;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --ground: #191715;
+      --bar: #221f1d;
+      --ink: #efece7;
+      --muted: #968e85;
+      --line: #332f2b;
+      --sunk: #14120f;
+      --accent: #f46b4b;
+      --on-accent: #1c1a18;
+      --shadow: 0 1px 2px rgba(0,0,0,.4), 0 18px 44px rgba(0,0,0,.5);
+      color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"] {
+    --ground: #191715;
+    --bar: #221f1d;
+    --ink: #efece7;
+    --muted: #968e85;
+    --line: #332f2b;
+    --sunk: #14120f;
+    --accent: #f46b4b;
+    --on-accent: #1c1a18;
+    --shadow: 0 1px 2px rgba(0,0,0,.4), 0 18px 44px rgba(0,0,0,.5);
+    color-scheme: dark;
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    height: 100dvh;
+    display: flex;
+    flex-direction: column;
+    background: var(--ground);
+    color: var(--ink);
+    font-family: var(--ui);
+    font-size: 14px;
+  }
+
+  /* ---------- toolbar ---------- */
+  .bar {
+    flex: none;
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    padding: 0 14px;
+    height: 52px;
+    background: var(--bar);
+    border-bottom: 1px solid var(--line);
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .bar::-webkit-scrollbar { display: none; }
+
+  .tabs, .segs { display: flex; align-items: center; gap: 2px; }
+  .segs { background: var(--sunk); border-radius: 8px; padding: 3px; gap: 3px; }
+
+  button {
+    font: inherit;
+    color: var(--muted);
+    background: none;
+    border: 0;
+    border-radius: 6px;
+    padding: 7px 11px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: color .12s, background-color .12s;
+  }
+  button:hover { color: var(--ink); }
+  button:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+
+  .tab[aria-selected="true"] {
+    color: var(--ink);
+    font-weight: 600;
+    box-shadow: inset 0 -2px 0 var(--accent);
+    border-radius: 6px 6px 0 0;
+  }
+  .seg[aria-selected="true"] {
+    color: var(--ink);
+    background: var(--bar);
+    font-weight: 500;
+    box-shadow: 0 1px 2px rgba(0,0,0,.12);
+  }
+
+  .spacer { flex: 1 1 auto; min-width: 12px; }
+
+  .label {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: .09em;
+    color: var(--muted);
+    white-space: nowrap;
+  }
+  .readout {
+    font-variant-numeric: tabular-nums;
+    color: var(--muted);
+    white-space: nowrap;
+    min-width: 74px;
+  }
+  .icon { padding: 7px 9px; font-size: 15px; line-height: 1; }
+
+  /* ---------- stage ---------- */
+  .stage {
+    flex: 1 1 auto;
+    min-height: 0;
+    display: flex;
+    justify-content: center;
+    padding: 0;
+    overflow: hidden;
+  }
+  .stage.framed { padding: 22px 16px; }
+
+  .device {
+    width: 100%;
+    height: 100%;
+    background: #fff;
+    border: 0;
+    display: block;
+  }
+  .stage.framed .device {
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    box-shadow: var(--shadow);
+    overflow: hidden;
+  }
+
+  iframe { width: 100%; height: 100%; border: 0; display: block; background: #fff; }
+
+  /* ---------- toast ---------- */
+  .toast {
+    position: fixed;
+    left: 50%;
+    bottom: 22px;
+    transform: translate(-50%, 14px);
+    max-width: min(560px, calc(100vw - 32px));
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    padding: 11px 15px;
+    background: var(--bar);
+    border: 1px solid var(--line);
+    border-left: 3px solid var(--accent);
+    border-radius: 9px;
+    box-shadow: var(--shadow);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .16s, transform .16s;
+  }
+  .toast.show { opacity: 1; transform: translate(-50%, 0); }
+  .toast .u {
+    color: var(--ink);
+    word-break: break-all;
+    font-size: 13px;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    * { transition: none !important; }
+  }
+</style>
+
+<div class="bar">
+  <div class="tabs" role="tablist" aria-label="Pages"></div>
+
+  <div class="spacer"></div>
+
+  <span class="label">Width</span>
+  <div class="segs" role="tablist" aria-label="Viewport width"></div>
+  <span class="readout" id="readout"></span>
+  <button class="icon" id="reload" title="Reload this page (R)" aria-label="Reload this page">&#8635;</button>
+</div>
+
+<div class="stage" id="stage">
+  <div class="device" id="device"><iframe id="frame" title="minti site preview"></iframe></div>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite">
+  <span class="label">External link</span>
+  <span class="u" id="toast-url"></span>
+</div>
+
+<script>
+  window.__MINTI_ASSETS = /*__ASSETS__*/;
+
+  var PAGES = /*__PAGES__*/;
+  var LABELS = /*__LABELS__*/;
+
+  var WIDTHS = [
+    { id: 'phone',   name: 'Phone',   w: 390 },
+    { id: 'tablet',  name: 'Tablet',  w: 834 },
+    { id: 'desktop', name: 'Desktop', w: 1280 },
+    { id: 'fit',     name: 'Fit',     w: 0 }
+  ];
+
+  var frame = document.getElementById('frame');
+  var device = document.getElementById('device');
+  var stage = document.getElementById('stage');
+  var readout = document.getElementById('readout');
+  var toast = document.getElementById('toast');
+  var order = Object.keys(PAGES);
+  var current = order[0];
+  var width = 'fit';
+  var pendingHash = '';
+
+  // ---- build the toolbar controls ----
+  var tabs = document.querySelector('.tabs');
+  order.forEach(function (name) {
+    var b = document.createElement('button');
+    b.className = 'tab';
+    b.type = 'button';
+    b.role = 'tab';
+    b.textContent = LABELS[name] || name;
+    b.onclick = function () { show(name); };
+    b.dataset.page = name;
+    tabs.appendChild(b);
+  });
+
+  var segs = document.querySelector('.segs');
+  WIDTHS.forEach(function (d) {
+    var b = document.createElement('button');
+    b.className = 'seg';
+    b.type = 'button';
+    b.role = 'tab';
+    b.textContent = d.name;
+    b.onclick = function () { setWidth(d.id); };
+    b.dataset.w = d.id;
+    segs.appendChild(b);
+  });
+
+  function setWidth(id) {
+    width = id;
+    var d = WIDTHS.filter(function (x) { return x.id === id; })[0];
+    var fit = !d.w;
+    stage.classList.toggle('framed', !fit);
+    device.style.width = fit ? '100%' : d.w + 'px';
+    device.style.maxWidth = '100%';
+    Array.prototype.forEach.call(segs.children, function (b) {
+      b.setAttribute('aria-selected', String(b.dataset.w === id));
+    });
+    measure();
+  }
+
+  function measure() {
+    readout.textContent = Math.round(device.getBoundingClientRect().width) + ' px';
+  }
+
+  function show(name, hash) {
+    if (!PAGES[name]) return;
+    current = name;
+    pendingHash = hash || '';
+    Array.prototype.forEach.call(tabs.children, function (b) {
+      b.setAttribute('aria-selected', String(b.dataset.page === name));
+    });
+    frame.srcdoc = PAGES[name];
+  }
+
+  frame.addEventListener('load', function () {
+    if (!pendingHash) return;
+    try {
+      var t = frame.contentDocument.querySelector(pendingHash);
+      if (t) t.scrollIntoView();
+    } catch (e) { /* nothing to scroll to */ }
+    pendingHash = '';
+  });
+
+  var toastTimer;
+  window.addEventListener('message', function (e) {
+    var m = e.data || {};
+    if (m.t === 'nav') {
+      show(m.page, m.hash);
+    } else if (m.t === 'ext') {
+      // The preview is sandboxed, so offsite links report their destination
+      // instead of navigating -- which is what you want to check anyway.
+      document.getElementById('toast-url').textContent = m.href;
+      toast.classList.add('show');
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(function () { toast.classList.remove('show'); }, 4200);
+    }
+  });
+
+  document.addEventListener('keydown', function (e) {
+    if (e.metaKey || e.ctrlKey || e.altKey) return;
+    var n = parseInt(e.key, 10);
+    if (n >= 1 && n <= order.length) { show(order[n - 1]); return; }
+    if (e.key === 'r' || e.key === 'R') { show(current); }
+  });
+
+  document.getElementById('reload').onclick = function () { show(current); };
+  window.addEventListener('resize', measure);
+
+  setWidth('fit');
+  show(current);
+</script>
