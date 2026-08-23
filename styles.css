@@ -142,7 +142,7 @@ p.murmur { margin: 26px 0 12px; }   /* block murmurs need the breathing room .st
   background: var(--panel);
   border: 1px solid var(--line);
   border-radius: 20px;
-  padding: 28px 26px 30px;
+  padding: 32px 28px;
   text-align: left;
 }
 .card .eyebrow { margin-bottom: 14px; }
@@ -150,15 +150,20 @@ p.murmur { margin: 26px 0 12px; }   /* block murmurs need the breathing room .st
 .card p { color: var(--muted); }
 .card p + p { margin-top: 10px; }
 
-/* closing call to action, sat inside a card like kominapp's */
+/* closing call to action, sat inside a card like kominapp's —
+   the card is centred on the page and its contents centred within it. */
 .cta-card {
   background: var(--panel);
   border: 1px solid var(--line);
   border-radius: 24px;
   padding: clamp(36px, 6vw, 60px);
+  max-width: 760px;
+  margin: 0 auto;
+  text-align: center;
 }
 .cta-card h2 { font-size: clamp(1.9rem, 4vw, 2.8rem); margin-bottom: 14px; }
-.cta-card p { color: var(--muted); font-size: 1.1rem; max-width: 48ch; margin-bottom: 28px; }
+.cta-card p { color: var(--muted); font-size: 1.1rem; max-width: 48ch; margin: 0 auto 28px; }
+.cta-card .badges { justify-content: center; }
 
 /* ---------- narrative carousel ---------- */
 .carousel { position: relative; }
