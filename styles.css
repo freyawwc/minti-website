@@ -90,6 +90,69 @@ h2.h { font-size: clamp(2rem, 4.4vw, 3.1rem); margin-bottom: 18px; }
 .statement { font-family: var(--serif); font-size: 1.3rem; color: var(--ink); margin: 30px 0 12px; }
 .statement:first-of-type { margin-top: 0; }
 
+/* ---------- narrative carousel ---------- */
+.carousel { position: relative; }
+.carousel-track {
+  display: flex;
+  gap: 24px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+  padding: 6px max(28px, calc((100% - 620px) / 2)) 12px;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+.carousel-track::-webkit-scrollbar { display: none; }
+
+.carousel-card {
+  flex: 0 0 min(100%, 620px);
+  scroll-snap-align: center;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 26px;
+  padding: 38px 34px 40px;
+  text-align: left;
+  transition: opacity .35s ease;
+}
+/* neighbours dim only once the script is driving the carousel */
+.carousel.is-ready .carousel-card { opacity: 0.5; }
+.carousel.is-ready .carousel-card.is-active { opacity: 1; }
+
+.carousel-card > * { margin: 0; }
+.carousel-card .eyebrow { margin-bottom: 12px; }
+.carousel-card h3 { font-size: clamp(1.5rem, 3vw, 2rem); margin-bottom: 20px; }
+.carousel-card .statement { font-size: 1.18rem; margin: 20px 0 8px; }
+.carousel-card h3 + .statement { margin-top: 0; }
+.carousel-card .lead-p { font-size: 1.04rem; }
+.carousel-card .lead-p + .lead-p { margin-top: 12px; }
+
+.carousel-controls { display: flex; align-items: center; justify-content: center; gap: 18px; margin-top: 10px; }
+.carousel-btn {
+  width: 42px; height: 42px; padding: 0;
+  border: 1px solid var(--line); border-radius: 50%;
+  background: var(--bg); color: var(--ink);
+  display: grid; place-items: center; cursor: pointer;
+  transition: border-color .15s ease, opacity .15s ease;
+}
+.carousel-btn:hover:not(:disabled) { border-color: var(--ink); }
+.carousel-btn:disabled { opacity: 0.3; cursor: default; }
+.carousel-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+.carousel-dots { display: flex; align-items: center; gap: 9px; }
+.carousel-dot {
+  width: 8px; height: 8px; padding: 0;
+  border: 0; border-radius: 50%;
+  background: #d4d2ce; cursor: pointer;
+  transition: background-color .2s ease, transform .2s ease;
+}
+.carousel-dot[aria-current="true"] { background: var(--accent); transform: scale(1.3); }
+.carousel-dot:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+
+@media (prefers-reduced-motion: reduce) {
+  .carousel-track { scroll-behavior: auto; }
+  .carousel-card, .carousel-dot, .carousel-btn { transition: none; }
+}
+
 /* step micro-label under the numeral */
 .step-label { font-size: 0.78rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); font-weight: 700; margin-bottom: 10px; }
 
