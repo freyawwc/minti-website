@@ -97,6 +97,32 @@ h2.h { font-size: clamp(2rem, 4.4vw, 3.1rem); margin-bottom: 18px; }
 .murmur-sm { font-size: 18px; }
 p.murmur { margin: 26px 0 12px; }   /* block murmurs need the breathing room .statement had */
 
+/* handwriting pull quote that closes a card grid — sits outside the cards
+   and is deliberately larger than the 18/24px inline murmurs, because it
+   reads as a page-level beat rather than a UI label. */
+.murmur-lead {
+  font-family: var(--hand);
+  font-style: normal;
+  color: var(--accent);
+  font-size: clamp(30px, 4.4vw, 46px);
+  line-height: 1.15;
+  text-align: center;
+  max-width: 26ch;
+  margin: 54px auto 0;
+}
+.murmur-lead .cue {
+  display: block;
+  font-family: var(--sans);
+  font-size: 0.8rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  font-weight: 600;
+  color: var(--muted);
+  margin-bottom: 18px;
+}
+/* smaller centred murmur, for closing a grid without shouting */
+p.murmur-after { text-align: center; max-width: 34ch; margin: 40px auto 0; }
+
 /* chapter mark: a small brand glyph used as a section-break ornament */
 .chapter-mark { padding: 44px 0; }
 .chapter-mark .logo { font-size: 2.4rem; }
