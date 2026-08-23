@@ -86,6 +86,22 @@ h2.h { font-size: clamp(2rem, 4.4vw, 3.1rem); margin-bottom: 18px; }
 .quote { font-family: var(--serif); font-style: italic; font-size: 1.35rem; color: var(--ink); margin-top: 6px; }
 .panel-card { background: var(--panel); border-radius: 28px; padding: 40px; }
 
+/* narrative statement lines (short punch lines inside a text section) */
+.statement { font-family: var(--serif); font-size: 1.3rem; color: var(--ink); margin: 30px 0 12px; }
+.statement:first-of-type { margin-top: 0; }
+
+/* step micro-label under the numeral */
+.step-label { font-size: 0.78rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); font-weight: 700; margin-bottom: 10px; }
+
+/* simple benefit list */
+.mini-list { list-style: none; margin: 24px auto; display: flex; flex-direction: column; gap: 10px; max-width: 46ch; }
+.mini-list li { color: var(--muted); font-size: 1.08rem; padding-left: 22px; position: relative; text-align: left; }
+.mini-list li::before { content: "—"; position: absolute; left: 0; color: var(--accent); }
+
+/* closing stanza before CTA */
+.stanza { display: flex; flex-direction: column; gap: 8px; margin-top: 32px; }
+.stanza p { font-family: var(--serif); font-size: clamp(1.3rem, 2.6vw, 1.7rem); color: var(--ink); }
+
 /* jar */
 .jar { position: relative; width: 190px; height: 224px; margin: 0 auto; }
 .jar-lid { position: absolute; top: 0; left: 50%; transform: translateX(-50%); width: 116px; height: 28px; background: var(--ink); border-radius: 9px; }
