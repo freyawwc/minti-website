@@ -6,8 +6,8 @@
   --bg: #FAF9F1;        /* m-paper  */
   --ink: #114296;       /* m-ink / m-blue */
   --ink-dark: #0B2F6E;  /* m-blue-dark — link hover */
-  --muted: #7C8087;     /* m-ink-soft */
-  --faint: #9AA0A6;
+  --muted: #5A5F68;     /* m-ink-soft, darkened to 6.08:1 on --bg for body copy */
+  --faint: #686E79;     /* secondary metadata, 4.86:1 on --bg */
   --line: rgba(17, 66, 150, 0.12);
   --panel: #F0EFE4;     /* m-cream */
   --panel-2: #E6E4D8;   /* m-desk  */
@@ -187,7 +187,9 @@ p.murmur { margin: 26px 0 12px; }   /* block murmurs need the breathing room .st
 }
 
 /* step micro-label under the numeral */
-.step-label { font-size: 0.78rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); font-weight: 700; margin-bottom: 10px; }
+/* Deliberately inherits --muted from `.step p`: the accent orange only reaches
+   2.77:1 on --bg, too low for label-size text. */
+.step-label { font-size: 0.78rem; letter-spacing: 0.1em; text-transform: uppercase; font-weight: 700; margin-bottom: 10px; }
 
 /* simple benefit list */
 .mini-list { list-style: none; margin: 24px auto; display: flex; flex-direction: column; gap: 10px; max-width: 46ch; }
