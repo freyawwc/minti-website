@@ -133,12 +133,14 @@ p.murmur { margin: 26px 0 12px; }   /* block murmurs need the breathing room .st
 
 /* ---------- about hero: copy left, looping animation right ---------- */
 .hero-split { display: grid; grid-template-columns: 1fr 1.05fr; gap: 32px; align-items: center; }
-/* the column is narrower than a full-width hero, so the title steps down a
-   size to keep it off a four-line wrap */
-.hero-split .page-title { font-size: clamp(2.2rem, 4vw, 3.5rem); }
+/* The column caps out at ~484px (half of .wrap's 1080px max-width) well
+   before the viewport stops growing, so sizing off vw alone overshoots on
+   wide screens. Capped lower so "keep the moment," still wraps to two
+   lines at every width the split layout is active. */
+.hero-split .page-title { font-size: clamp(2.1rem, 2.5vw, 2.85rem); }
 @media (max-width: 900px) {
   .hero-split { grid-template-columns: 1fr; gap: 8px; }
-  .hero-split .page-title { font-size: clamp(2.6rem, 8vw, 3.6rem); }
+  .hero-split .page-title { font-size: clamp(2.1rem, 7vw, 3rem); }
 }
 
 /* The piece is authored on a 1920x1080 stage but its content only occupies
