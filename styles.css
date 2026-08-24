@@ -59,7 +59,10 @@ header.nav { position: sticky; top: 0; z-index: 50; background: rgba(250, 249, 2
 .badges { display: flex; gap: 12px; flex-wrap: wrap; }
 .badges.center { justify-content: center; }
 .badge { display: inline-flex; align-items: center; gap: 10px; background: var(--ink); color: #fff; padding: 12px 22px; border-radius: 14px; transition: transform .15s ease, opacity .15s ease; }
-.badge:hover { transform: translateY(-2px); opacity: 0.9; }
+/* the color:#fff here isn't decorative — without it, the global a:hover
+   rule (a type selector + pseudo-class, which outranks .badge's plain
+   class) would flip this text to --ink-dark on hover. */
+.badge:hover { color: #fff; transform: translateY(-2px); opacity: 0.9; }
 .badge:active { background: var(--ink-light); color: #fff; opacity: 1; }
 .badge svg { width: 24px; height: 24px; flex: none; }
 .badge .b-txt { text-align: left; line-height: 1.1; white-space: nowrap; }
@@ -97,17 +100,12 @@ h2.h { font-size: clamp(2rem, 4.4vw, 3.1rem); margin-bottom: 18px; }
 .murmur-sm { font-size: 18px; }
 p.murmur { margin: 26px 0 12px; }   /* block murmurs need the breathing room .statement had */
 
-/* handwriting pull quote that closes a card grid — sits outside the cards
-   and is deliberately larger than the 18/24px inline murmurs, because it
-   reads as a page-level beat rather than a UI label. */
+/* handwriting pull quote that closes a card grid — sits outside the cards.
+   Sized by .murmur (24px) like every other murmur on the page; this class
+   only handles the layout (centring, top spacing, the "cue" sub-label). */
 .murmur-lead {
-  font-family: var(--hand);
-  font-style: normal;
-  color: var(--accent);
-  font-size: clamp(30px, 4.4vw, 46px);
-  line-height: 1.15;
+  display: block;
   text-align: center;
-  max-width: 26ch;
   margin: 54px auto 0;
 }
 .murmur-lead .cue {
@@ -121,7 +119,12 @@ p.murmur { margin: 26px 0 12px; }   /* block murmurs need the breathing room .st
   margin-bottom: 18px;
 }
 /* smaller centred murmur, for closing a grid without shouting */
-p.murmur-after { text-align: center; max-width: 34ch; margin: 40px auto 0; }
+p.murmur-after { text-align: center; margin: 40px auto 0; }
+
+/* keeps a murmur on a single line — shrinks below the library's 24px floor
+   only on narrow viewports, purely so the line doesn't force the page to
+   scroll sideways; at anything wider than a phone it renders at 24px. */
+.murmur-oneline { white-space: nowrap; font-size: clamp(11px, 3.6vw, 24px); }
 
 /* chapter mark: a small brand glyph used as a section-break ornament */
 .chapter-mark { padding: 44px 0; }
