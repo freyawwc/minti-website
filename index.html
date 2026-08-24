@@ -152,10 +152,14 @@
     }
 
     /* ---------- Footer ---------- */
-    .corner { flex: none; display: flex; justify-content: flex-start; align-items: flex-end; padding: 0 clamp(20px, 4vw, 44px) clamp(20px, 3.5vh, 34px); }
-    .foot-left { display: flex; flex-direction: column; gap: 4px; font-size: 0.82rem; color: var(--faint); line-height: 1.4; }
-    .foot-left a { color: var(--muted); }
-    .foot-left a:hover { color: var(--ink); }
+    .corner {
+      flex: none; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;
+      padding: 0 clamp(20px, 4vw, 44px) clamp(20px, 3.5vh, 34px);
+      font-size: 0.82rem; color: var(--faint); line-height: 1.4;
+    }
+    .corner a { color: var(--muted); }
+    .corner a:hover { color: var(--ink); }
+    @media (max-width: 720px) { .corner { justify-content: center; text-align: center; } }
 
     /* download button */
     .badge { display: inline-flex; align-items: center; gap: 10px; background: var(--ink); color: #fff; padding: 12px 22px; border-radius: 14px; transition: transform .15s ease, opacity .15s ease; }
@@ -235,10 +239,8 @@
 
   <!-- BOTTOM -->
   <footer class="corner">
-    <div class="foot-left">
-      <span><a href="terms.html">Terms</a> · <a href="privacy.html">Privacy</a></span>
-      <span>© 2026 Circle Five Studios, Inc.</span>
-    </div>
+    <span class="foot-copy">&copy; 2026 Circle Five Studios, Inc.</span>
+    <span class="foot-legal"><a href="terms.html">Terms</a> &middot; <a href="privacy.html">Privacy</a></span>
   </footer>
 
   <script>
