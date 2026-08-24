@@ -53,18 +53,22 @@
     .headline .it { color: var(--accent); }
 
     /* ---------- Key-feature animation (looping, vanilla JS) ---------- */
+    /* Sits on the page background as one layer — no card, no frame. The mask
+       feathers the frame edges so anything reaching them dissolves into the
+       page instead of hard-cutting against an invisible boundary. */
     .kf-wrap {
       --kfh: min(52vh, 520px);
       --kfw: min(92vw, calc(var(--kfh) * 16 / 9));
       width: var(--kfw); height: calc(var(--kfw) * 9 / 16);
-      position: relative; overflow: hidden; border-radius: 28px;
-      box-shadow: 0 40px 80px -40px rgba(0,0,0,0.42);
-      background: #E6E4D8;
+      position: relative; overflow: hidden; background: none;
+      -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 5%, #000 95%, transparent 100%);
+      mask-image: linear-gradient(to bottom, transparent 0, #000 5%, #000 95%, transparent 100%);
     }
     .kf-stage { position: absolute; top: 0; left: 0; width: 1920px; height: 1080px; transform-origin: top left; font-family: var(--sans); }
-    .kf-vignette, .kf-flash { position: absolute; inset: 0; }
-    .kf-vignette { background: radial-gradient(circle at 50% 42%, rgba(255,255,255,0.55) 0%, rgba(255,255,255,0) 62%); }
-    .kf-flash { background: #fff; opacity: 0; pointer-events: none; }
+    /* Full-strength whiteout like the source, feathered left/right only —
+       the wrap mask already dissolves the top and bottom edges. */
+    .kf-flash { position: absolute; inset: 0; opacity: 0; pointer-events: none;
+      background: linear-gradient(to right, rgba(255,255,255,0) 0, #fff 12%, #fff 88%, rgba(255,255,255,0) 100%); }
     .kf-cam { position: absolute; inset: 0; }
 
     .kf-radar { position: absolute; left: 960px; top: 540px; opacity: 0; }
@@ -179,7 +183,6 @@
   <main class="main">
     <div class="kf-wrap" id="kfWrap" aria-hidden="true">
       <div class="kf-stage" id="kfStage">
-        <div class="kf-vignette"></div>
         <div class="kf-cam" id="kfCam">
           <div class="kf-radar" id="kfRadar">
             <div class="kf-ring d1"></div>
