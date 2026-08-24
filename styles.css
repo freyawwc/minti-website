@@ -131,6 +131,67 @@ p.murmur { margin: 26px 0 12px; }   /* block murmurs need the breathing room .st
 .quote { font-family: var(--serif); font-size: 1.35rem; color: var(--ink); margin-top: 6px; }
 .panel-card { background: var(--panel); border-radius: 28px; padding: 40px; }
 
+/* ---------- about hero: copy left, looping animation right ---------- */
+.hero-split { display: grid; grid-template-columns: 1fr 1.05fr; gap: 32px; align-items: center; }
+/* the column is narrower than a full-width hero, so the title steps down a
+   size to keep it off a four-line wrap */
+.hero-split .page-title { font-size: clamp(2.2rem, 4vw, 3.5rem); }
+@media (max-width: 900px) {
+  .hero-split { grid-template-columns: 1fr; gap: 8px; }
+  .hero-split .page-title { font-size: clamp(2.6rem, 8vw, 3.6rem); }
+}
+
+/* The piece is authored on a 1920x1080 stage but its content only occupies
+   the middle ~1280px, so the wrap is a 1280x1080 window onto it and the
+   stage is slid left to centre that window. No panel, no frame — it paints
+   straight onto the page. The mask feathers the left and right edges, where
+   the expanding ping rings are the only thing that reaches a boundary. */
+.mt-wrap {
+  position: relative; width: 100%; aspect-ratio: 1280 / 1080; overflow: hidden;
+  -webkit-mask-image: linear-gradient(to right, transparent 0, #000 5%, #000 95%, transparent 100%);
+  mask-image: linear-gradient(to right, transparent 0, #000 5%, #000 95%, transparent 100%);
+}
+.mt-stage { position: absolute; top: 0; left: 0; width: 1920px; height: 1080px; transform-origin: 0 0; }
+.mt-cam { position: absolute; inset: 0; transform-origin: 50% 46%; }
+
+.mt-radar { position: absolute; left: 960px; top: 470px; }
+.mt-ring { position: absolute; border-radius: 50%; }
+.mt-ring.r1 { left: -450px; top: -450px; width: 900px; height: 900px; border: 2px dashed rgba(17,66,150,0.16); }
+.mt-ring.r2 { left: -330px; top: -330px; width: 660px; height: 660px; border: 2px solid rgba(17,66,150,0.12); }
+.mt-ring.r3 { left: -210px; top: -210px; width: 420px; height: 420px; border: 2px dashed rgba(17,66,150,0.16); }
+.mt-sweep-mask { position: absolute; left: -450px; top: -450px; width: 900px; height: 900px; border-radius: 50%; overflow: hidden; }
+.mt-sweep { position: absolute; inset: 0; transform-origin: 50% 50%; background: conic-gradient(from 0deg, rgba(17,66,150,0.14) 0deg, rgba(17,66,150,0.05) 34deg, rgba(17,66,150,0) 104deg); }
+.mt-blip { position: absolute; border-radius: 50%; background: var(--ink); }
+.mt-glow { position: absolute; left: -150px; top: -150px; width: 300px; height: 300px; border-radius: 50%; opacity: 0; background: radial-gradient(circle, rgba(122,229,130,0.55) 0%, rgba(122,229,130,0) 68%); }
+.mt-hub { position: absolute; left: -82px; top: -82px; width: 164px; height: 164px; }
+.mt-hub-face { position: absolute; inset: 8px; border-radius: 50%; background: var(--bg); border: 2.5px solid rgba(17,66,150,0.18); box-shadow: 0 5px 24px rgba(17,66,150,0.13); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; }
+.mt-hub-num { font-family: var(--serif); font-weight: 700; font-size: 40px; letter-spacing: -1px; line-height: 1; color: var(--ink); }
+.mt-hub-num span { color: #7C8087; }
+.mt-hub-label { font-weight: 700; font-size: 12px; letter-spacing: 1.6px; color: #7C8087; }
+.mt-hub svg { position: absolute; left: 0; top: 0; transform: rotate(-90deg); }
+
+.mt-profile { position: absolute; }
+.mt-ping { position: absolute; border-radius: 50%; opacity: 0; }
+.mt-card {
+  position: absolute; left: -105px; top: -132px; width: 210px; opacity: 0; transform-origin: 50% 50%;
+  background: var(--bg); border: 2.5px solid rgba(17,66,150,0.18); border-radius: 14px; padding: 12px;
+  box-sizing: border-box; box-shadow: 0 5px 24px rgba(17,66,150,0.13);
+}
+.mt-photo { position: relative; width: 186px; height: 186px; border-radius: 10px; overflow: hidden; background: #0B0B0B; }
+.mt-photo img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.mt-photo i { position: absolute; inset: 0; border-radius: 10px; opacity: 0.7; }
+.mt-name { margin-top: 9px; display: flex; align-items: center; gap: 8px; }
+.mt-name b { width: 12px; height: 12px; border-radius: 50%; border: 1.5px solid rgba(17,66,150,0.18); flex: none; }
+.mt-name span { font-family: var(--serif); font-weight: 700; font-size: 28px; color: var(--ink); letter-spacing: -0.5px; line-height: 1; }
+.mt-hand { margin-top: 3px; font-family: var(--hand); font-size: 24px; color: var(--accent); line-height: 1; white-space: nowrap; opacity: 0; }
+.mt-here { position: absolute; right: -10px; top: -10px; padding: 4px 10px; background: #7AE582; border: 1.5px solid rgba(17,66,150,0.18); border-radius: 999px; font-weight: 700; font-size: 12px; letter-spacing: 1.4px; color: var(--ink); opacity: 0; }
+
+.mt-caption { position: absolute; left: 0; right: 0; bottom: 62px; text-align: center; opacity: 0; transform-origin: 50% 50%; }
+.mt-cap-inner { display: inline-block; position: relative; }
+.mt-cap-text { font-family: var(--hand); font-size: 92px; color: var(--accent); line-height: 1.05; white-space: nowrap; }
+.mt-cap-text span { margin-left: 14px; font-size: 62px; opacity: 0; }
+.mt-cap-swash { position: absolute; left: 4px; right: 58px; bottom: 2px; height: 5px; border-radius: 999px; background: var(--accent); opacity: 0.5; transform: scaleX(0); transform-origin: 0% 50%; }
+
 /* ---------- company page: one centred column of prose ---------- */
 .co-section { padding: 104px 0 96px; }
 .co-prose { display: flex; flex-direction: column; gap: 30px; }

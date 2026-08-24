@@ -28,14 +28,45 @@
   <!-- HERO -->
   <section class="hero">
     <div class="wrap left">
-      <div class="prose">
-        <h1 class="page-title">put your phone down. keep the moment.</h1>
-        <p class="lead-p">minti turns time together into memories you can actually keep.</p>
-        <div class="badges">
-          <a class="badge" href="https://apps.apple.com/tw/app/minti-lets-be-present/id6791064385" target="_blank" rel="noopener" aria-label="Download on the App Store">
-            <svg viewBox="0 0 24 24" fill="#fff" aria-hidden="true"><path d="M16.365 1.43c.05 1.02-.34 2.02-.99 2.74-.68.76-1.78 1.34-2.85 1.26-.09-1 .38-2.04.99-2.72.68-.75 1.86-1.32 2.85-1.28zM19.6 17.06c-.53 1.22-.78 1.76-1.46 2.84-.95 1.5-2.29 3.37-3.95 3.38-1.47.02-1.85-.96-3.85-.95-2 .01-2.42.97-3.9.95-1.66-.02-2.93-1.71-3.88-3.21-2.66-4.2-2.94-9.12-1.3-11.74 1.16-1.85 3-2.93 4.72-2.93 1.76 0 2.86.98 4.31.98 1.41 0 2.27-.98 4.3-.98 1.53 0 3.16.84 4.31 2.28-3.79 2.08-3.17 7.49.6 9.38z"/></svg>
-            <span class="b-txt"><span class="b-small">Download on the</span><span class="b-big">App Store</span></span>
-          </a>
+      <div class="hero-split">
+        <div class="prose">
+          <h1 class="page-title">put your phone down. keep the moment.</h1>
+          <p class="lead-p">minti turns time together into memories you can actually keep.</p>
+          <div class="badges">
+            <a class="badge" href="https://apps.apple.com/tw/app/minti-lets-be-present/id6791064385" target="_blank" rel="noopener" aria-label="Download on the App Store">
+              <svg viewBox="0 0 24 24" fill="#fff" aria-hidden="true"><path d="M16.365 1.43c.05 1.02-.34 2.02-.99 2.74-.68.76-1.78 1.34-2.85 1.26-.09-1 .38-2.04.99-2.72.68-.75 1.86-1.32 2.85-1.28zM19.6 17.06c-.53 1.22-.78 1.76-1.46 2.84-.95 1.5-2.29 3.37-3.95 3.38-1.47.02-1.85-.96-3.85-.95-2 .01-2.42.97-3.9.95-1.66-.02-2.93-1.71-3.88-3.21-2.66-4.2-2.94-9.12-1.3-11.74 1.16-1.85 3-2.93 4.72-2.93 1.76 0 2.86.98 4.31.98 1.41 0 2.27-.98 4.3-.98 1.53 0 3.16.84 4.31 2.28-3.79 2.08-3.17 7.49.6 9.38z"/></svg>
+              <span class="b-txt"><span class="b-small">Download on the</span><span class="b-big">App Store</span></span>
+            </a>
+          </div>
+        </div>
+
+        <div class="mt-wrap" id="mtWrap" aria-hidden="true">
+          <div class="mt-stage" id="mtStage">
+            <div class="mt-cam" id="mtCam">
+              <div class="mt-radar" id="mtRadar">
+                <div class="mt-ring r1"></div>
+                <div class="mt-ring r2"></div>
+                <div class="mt-ring r3"></div>
+                <div class="mt-sweep-mask" id="mtSweepMask"><div class="mt-sweep" id="mtSweep"></div></div>
+                <div id="mtBlips"></div>
+                <div class="mt-glow" id="mtGlow"></div>
+                <div class="mt-hub" id="mtHub">
+                  <div class="mt-hub-face">
+                    <div class="mt-hub-num" id="mtHubNum">0<span>/4</span></div>
+                    <div class="mt-hub-label" id="mtHubLabel">FRIENDS</div>
+                  </div>
+                  <svg width="164" height="164"><circle cx="82" cy="82" r="62" fill="none" stroke="rgba(17,66,150,0.10)" stroke-width="5" /><circle cx="82" cy="82" r="62" fill="none" stroke-width="5" stroke-linecap="round" id="mtHubArc" /></svg>
+                </div>
+              </div>
+              <div id="mtProfiles"></div>
+            </div>
+            <div class="mt-caption" id="mtCaption">
+              <div class="mt-cap-inner">
+                <div class="mt-cap-text" id="mtCapText">make time together<span id="mtStar">&#10022;</span></div>
+                <div class="mt-cap-swash" id="mtSwash"></div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -205,6 +236,230 @@
   <script>
     const io = new IntersectionObserver((es) => { es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }); }, { threshold: 0.12 });
     document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+  </script>
+
+  <script>
+    /* "make time together" — the session radar filling up with four friends.
+       Ported from the authored composition to plain JS so the page keeps its
+       no-build-step, no-framework footing. */
+    (function () {
+      const wrap = document.getElementById('mtWrap');
+      const stage = document.getElementById('mtStage');
+      if (!wrap || !stage) return;
+
+      const Easing = {
+        linear: (t) => t,
+        easeInQuad: (t) => t * t,
+        easeOutQuad: (t) => t * (2 - t),
+        easeInOutSine: (t) => -(Math.cos(Math.PI * t) - 1) / 2,
+        easeOutCubic: (t) => (--t) * t * t + 1,
+        easeOutBack: (t) => { const c1 = 1.70158, c3 = c1 + 1; return 1 + c3 * Math.pow(t - 1, 3) + c1 * Math.pow(t - 1, 2); },
+      };
+      function interpolate(input, output, ease) {
+        ease = ease || Easing.linear;
+        return (t) => {
+          if (t <= input[0]) return output[0];
+          if (t >= input[input.length - 1]) return output[output.length - 1];
+          for (let i = 0; i < input.length - 1; i++) {
+            if (t >= input[i] && t <= input[i + 1]) {
+              const span = input[i + 1] - input[i];
+              const local = span === 0 ? 0 : (t - input[i]) / span;
+              return output[i] + (output[i + 1] - output[i]) * ease(local);
+            }
+          }
+          return output[output.length - 1];
+        };
+      }
+      function animate(o) {
+        const from = o.from, to = o.to, start = o.start, end = o.end, ease = o.ease || Easing.linear;
+        return (t) => {
+          if (t <= start) return from;
+          if (t >= end) return to;
+          return from + (to - from) * ease((t - start) / (end - start));
+        };
+      }
+      const MOTION = {
+        enter: (o) => animate(Object.assign({ ease: Easing.easeOutCubic }, o)),
+        pop: (o) => animate(Object.assign({ ease: Easing.easeOutBack }, o)),
+      };
+
+      /* Cue times are the cumulative scene durations: no scene declares a
+         natural-duration override, so the engine's time-warp is the identity. */
+      const CUES = { Radar: 0, Join: 2.2, Live: 6.8, Together: 9.0 };
+      const END = 11.6;
+      const CX = 960, CY = 470, CW = 210;
+      const WINDOW_W = 1280, OFFSET_X = (1920 - WINDOW_W) / 2;
+
+      const CREW = [
+        { id: 'blue',   order: 0, name: 'Jerry', hand: 'you ✦',     hue: '#4FB8E0', x: -452, y: -156, rot: -3.2 },
+        { id: 'lime',   order: 1, name: 'Maya',  hand: 'always late',    hue: '#C3D22E', x:  456, y: -166, rot:  2.8 },
+        { id: 'pink',   order: 2, name: 'Rin',   hand: 'first to flip',  hue: '#E1436E', x:  410, y:  198, rot: -2.4 },
+        { id: 'orange', order: 3, name: 'Leo',   hand: 'brings snacks',  hue: '#EF7A22', x: -406, y:  204, rot:  3.4 },
+      ];
+      const BLIPS = [
+        { a: 24, r: 268 }, { a: 108, r: 402 }, { a: 163, r: 176 },
+        { a: 214, r: 356 }, { a: 292, r: 228 }, { a: 334, r: 424 },
+      ];
+      const joinAt = (m) => CUES.Join + 0.15 + m.order * 1.05;
+      const R = 62, CIRC = 2 * Math.PI * R;
+
+      /* ---- build the blips ---- */
+      const blipsRoot = document.getElementById('mtBlips');
+      const blipEls = BLIPS.map(() => {
+        const el = document.createElement('div');
+        el.className = 'mt-blip';
+        blipsRoot.appendChild(el);
+        return el;
+      });
+
+      /* ---- build the four profiles ---- */
+      const profilesRoot = document.getElementById('mtProfiles');
+      const profileEls = CREW.map((m) => {
+        const el = document.createElement('div');
+        el.className = 'mt-profile';
+        el.innerHTML =
+          '<div class="mt-ping" data-ping></div><div class="mt-ping" data-ping></div>' +
+          '<div class="mt-card" data-card>' +
+            '<div class="mt-photo"><img src="hero-anim/bear-' + m.id + '.webp" alt="" />' +
+              '<i style="box-shadow: inset 0 0 0 3px ' + m.hue + '"></i></div>' +
+            '<div class="mt-name"><b style="background:' + m.hue + '"></b><span>' + m.name + '</span></div>' +
+            '<div class="mt-hand" data-hand>' + m.hand + '</div>' +
+            '<div class="mt-here" data-here>HERE</div>' +
+          '</div>';
+        profilesRoot.appendChild(el);
+        const pings = el.querySelectorAll('[data-ping]');
+        return {
+          m: m, root: el, card: el.querySelector('[data-card]'),
+          hand: el.querySelector('[data-hand]'), here: el.querySelector('[data-here]'),
+          pings: [pings[0], pings[1]],
+        };
+      });
+
+      const camEl = document.getElementById('mtCam');
+      const radarEl = document.getElementById('mtRadar');
+      const sweepEl = document.getElementById('mtSweep');
+      const sweepMaskEl = document.getElementById('mtSweepMask');
+      const ringEls = radarEl.querySelectorAll('.mt-ring');
+      const glowEl = document.getElementById('mtGlow');
+      const hubEl = document.getElementById('mtHub');
+      const hubNumEl = document.getElementById('mtHubNum');
+      const hubLabelEl = document.getElementById('mtHubLabel');
+      const hubArcEl = document.getElementById('mtHubArc');
+      const capEl = document.getElementById('mtCaption');
+      const capTextEl = document.getElementById('mtCapText');
+      const starEl = document.getElementById('mtStar');
+      const swashEl = document.getElementById('mtSwash');
+      hubArcEl.setAttribute('stroke-dasharray', CIRC.toFixed(2));
+
+      function render(T) {
+        const joined = CREW.filter((m) => T >= joinAt(m) + 0.3).length;
+        const pull = MOTION.enter({ from: 0, to: 0.13, start: CUES.Together + 0.1, end: CUES.Together + 1.25 })(T);
+
+        const camS = interpolate([0, CUES.Join, CUES.Live, CUES.Together, END], [1.05, 1.01, 1.03, 1.07, 1.05], Easing.easeInOutSine)(T);
+        const camY = interpolate([0, CUES.Join, CUES.Live, CUES.Together, END], [10, 0, -6, -18, 10], Easing.easeInOutSine)(T);
+        const inAll = MOTION.enter({ from: 0, to: 1, start: 0, end: 0.4 })(T);
+        const outAll = MOTION.enter({ from: 1, to: 0, start: END - 0.8, end: END - 0.08 })(T);
+        const alpha = inAll * outAll;
+
+        camEl.style.transform = 'translateY(' + camY + 'px) scale(' + camS + ')';
+        camEl.style.opacity = alpha;
+
+        /* radar */
+        const grow = MOTION.enter({ from: 0.80, to: 1, start: 0.05, end: 1.3 })(T);
+        const radarO = MOTION.enter({ from: 0, to: 1, start: 0.05, end: 0.95 })(T);
+        const spin = (T * 58) % 360;
+        const hubPop = MOTION.pop({ from: 0.84, to: 1, start: 0.45, end: 1.2 })(T);
+        const done = joined >= 4;
+        radarEl.style.opacity = radarO;
+        ringEls.forEach((r) => { r.style.transform = 'scale(' + grow + ')'; });
+        sweepMaskEl.style.transform = 'scale(' + grow + ')';
+        sweepEl.style.transform = 'rotate(' + spin + 'deg)';
+        glowEl.style.opacity = MOTION.enter({ from: 0, to: 1, start: CUES.Live, end: CUES.Live + 0.7 })(T);
+        hubEl.style.transform = 'scale(' + hubPop + ')';
+        hubNumEl.innerHTML = joined + '<span>/4</span>';
+        hubLabelEl.textContent = done ? 'LIVE' : 'FRIENDS';
+        hubLabelEl.style.color = done ? '#114296' : '#7C8087';
+        hubArcEl.setAttribute('stroke', done ? '#7AE582' : '#114296');
+        hubArcEl.setAttribute('stroke-dashoffset', (CIRC * (1 - joined / 4)).toFixed(2));
+
+        blipEls.forEach((el, i) => {
+          const b = BLIPS[i];
+          const a = (b.a + spin * 0.22) % 360;
+          const dl = (spin - a + 360) % 360;
+          const hot = dl < 96 ? 1 - dl / 96 : 0;
+          const s = 7 + hot * 5;
+          el.style.width = s + 'px';
+          el.style.height = s + 'px';
+          el.style.left = (-s / 2 + Math.cos((a * Math.PI) / 180) * b.r * grow) + 'px';
+          el.style.top = (-s / 2 + Math.sin((a * Math.PI) / 180) * b.r * grow) + 'px';
+          el.style.opacity = 0.14 + hot * 0.5;
+        });
+
+        /* profiles */
+        profileEls.forEach((pe) => {
+          const m = pe.m;
+          const at = joinAt(m), ping = at - 0.42;
+          const o = MOTION.enter({ from: 0, to: 1, start: at, end: at + 0.32 })(T);
+          const s = MOTION.pop({ from: 0.62, to: 1, start: at, end: at + 0.78 })(T);
+          const dy = MOTION.pop({ from: -46, to: 0, start: at, end: at + 0.82 })(T);
+          const breath = 1 + Math.sin((T + m.order * 0.7) * 1.9) * 0.008;
+          const lean = Math.sin((T + m.order * 1.3) * 1.5) * 0.7;
+          const hug = MOTION.pop({ from: 1, to: 1.05, start: CUES.Together + 0.1, end: CUES.Together + 1.1 })(T);
+          const liveO = MOTION.pop({ from: 0, to: 1, start: CUES.Live + 0.15 + m.order * 0.08, end: CUES.Live + 0.6 + m.order * 0.08 })(T);
+
+          pe.root.style.left = (CX + m.x * (1 - pull)) + 'px';
+          pe.root.style.top = (CY + m.y * (1 - pull)) + 'px';
+          pe.card.style.opacity = o;
+          pe.card.style.transform = 'translateY(' + dy + 'px) rotate(' + (m.rot + lean) + 'deg) scale(' + (s * breath * hug) + ')';
+          pe.hand.style.opacity = MOTION.enter({ from: 0, to: 1, start: at + 0.42, end: at + 0.8 })(T);
+          pe.here.style.opacity = liveO;
+          pe.here.style.transform = 'scale(' + (0.6 + liveO * 0.4) + ')';
+
+          [0, 0.3].forEach((d, i) => {
+            const p = MOTION.enter({ from: 0, to: 1, start: ping + d, end: ping + d + 1 })(T);
+            const size = 54 + p * 250;
+            const el = pe.pings[i];
+            el.style.width = size + 'px';
+            el.style.height = size + 'px';
+            el.style.left = (-size / 2) + 'px';
+            el.style.top = (-size / 2) + 'px';
+            el.style.border = '2.5px solid ' + m.hue;
+            el.style.opacity = (p > 0 && p < 1) ? (1 - p) * 0.75 : 0;
+          });
+        });
+
+        /* handwritten caption */
+        const st = 1.25;
+        const wipe = MOTION.enter({ from: 100, to: 0, start: st, end: st + 1.25 })(T);
+        const rise = MOTION.pop({ from: 26, to: 0, start: st, end: st + 1 })(T);
+        const nudge = MOTION.pop({ from: 1, to: 1.045, start: CUES.Together + 0.15, end: CUES.Together + 0.95 })(T);
+        const drift = Math.sin(T * 1.1) * 3;
+        capEl.style.opacity = MOTION.enter({ from: 0, to: 1, start: st, end: st + 0.3 })(T) * alpha;
+        capEl.style.transform = 'translateY(' + (rise + drift) + 'px) rotate(-1.6deg) scale(' + nudge + ')';
+        capTextEl.style.clipPath = 'inset(-20% ' + wipe + '% -20% -6%)';
+        starEl.style.opacity = MOTION.pop({ from: 0, to: 1, start: st + 1.1, end: st + 1.5 })(T);
+        swashEl.style.transform = 'scaleX(' + MOTION.enter({ from: 0, to: 1, start: CUES.Together + 0.25, end: CUES.Together + 1.15 })(T) + ')';
+      }
+
+      function fit() {
+        const s = wrap.clientWidth / WINDOW_W;
+        stage.style.transform = 'scale(' + s + ') translateX(' + -OFFSET_X + 'px)';
+      }
+      window.addEventListener('resize', fit);
+      fit();
+
+      if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        render(10.5);   // all four here, caption finished — a complete still
+        return;
+      }
+
+      let t0 = null;
+      (function tick(now) {
+        if (t0 === null) t0 = now;
+        render(((now - t0) / 1000) % END);
+        requestAnimationFrame(tick);
+      })(performance.now());
+    })();
   </script>
 </body>
 </html>

@@ -83,6 +83,28 @@ SHIM = """
     set: function (v) { d.set.call(this, map(v)); }
   });
 
+  // about.html builds its animation's <img>s through innerHTML, which sets the
+  // attribute without going through the property setter above -- so catch
+  // those as they land in the DOM.
+  function fixImg(img) {
+    var cur = img.getAttribute('src'), mapped = cur && map(cur);
+    if (mapped && mapped !== cur) img.setAttribute('src', mapped);
+  }
+  new MutationObserver(function (recs) {
+    for (var i = 0; i < recs.length; i++) {
+      var added = recs[i].addedNodes || [];
+      for (var j = 0; j < added.length; j++) {
+        var n = added[j];
+        if (!n || n.nodeType !== 1) continue;
+        if (n.tagName === 'IMG') fixImg(n);
+        if (n.querySelectorAll) {
+          var inner = n.querySelectorAll('img');
+          for (var k = 0; k < inner.length; k++) fixImg(inner[k]);
+        }
+      }
+    }
+  }).observe(document.documentElement, { childList: true, subtree: true });
+
   document.addEventListener('click', function (e) {
     var a = e.target.closest && e.target.closest('a[href]');
     if (!a) return;
