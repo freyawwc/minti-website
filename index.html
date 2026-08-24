@@ -52,53 +52,99 @@
     .headline { font-family: var(--serif); font-weight: 400; font-size: clamp(2rem, 5.4vw, 4.2rem); line-height: 1.06; letter-spacing: -0.01em; }
     .headline .it { color: var(--accent); }
 
-    /* ---------- 3D flipping phone ---------- */
-    .stage { perspective: 1300px; perspective-origin: 50% 42%; height: min(58vh, 560px); display: grid; place-items: center; }
-    .phone3d {
-      position: relative; height: 100%; aspect-ratio: 300 / 610;
-      transform-style: preserve-3d;
-      animation: flip 8.5s cubic-bezier(.66,0,.34,1) infinite;
-      will-change: transform;
-    }
-    .face {
-      position: absolute; inset: 0; border-radius: 42px; overflow: hidden;
-      backface-visibility: hidden; -webkit-backface-visibility: hidden;
+    /* ---------- Key-feature animation (looping, vanilla JS) ---------- */
+    .kf-wrap {
+      --kfh: min(52vh, 520px);
+      --kfw: min(92vw, calc(var(--kfh) * 16 / 9));
+      width: var(--kfw); height: calc(var(--kfw) * 9 / 16);
+      position: relative; overflow: hidden; border-radius: 28px;
       box-shadow: 0 40px 80px -40px rgba(0,0,0,0.42);
+      background: #E6E4D8;
     }
-    .face.front { background: var(--ink); padding: 11px; }
-    .scr-img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 50%; transform: scale(1.55); border-radius: 33px; display: block; background: var(--panel); transition: opacity .25s ease; }
-    .scr {
-      width: 100%; height: 100%; border-radius: 33px; overflow: hidden; background: var(--panel);
-      display: flex; flex-direction: column; align-items: center;
-      padding: 8% 8% 6%; position: relative;
-    }
-    .notch { position: absolute; top: 3.2%; left: 50%; transform: translateX(-50%); width: 30%; height: 3.6%; background: var(--ink); border-radius: 999px; z-index: 3; }
-    .p-eyebrow { font-size: clamp(0.6rem, 1.4vh, 0.72rem); letter-spacing: 0.14em; text-transform: uppercase; color: var(--faint); font-weight: 700; margin-top: 6%; }
-    .p-ring { position: relative; width: 54%; aspect-ratio: 1; margin: 8% 0 5%; }
-    .p-ring svg { width: 100%; height: 100%; transform: rotate(-90deg); }
-    .p-ring .glyph { position: absolute; inset: 0; display: grid; place-items: center; font-size: clamp(1.6rem, 4.4vh, 2.6rem); }
-    .p-timer { font-family: var(--serif); font-size: clamp(2rem, 5.4vh, 3.2rem); letter-spacing: -0.02em; }
-    .p-timer-label { font-size: clamp(0.7rem, 1.5vh, 0.82rem); color: var(--muted); margin-top: 2px; }
-    .p-members { display: flex; margin-top: 6%; }
-    .p-members .m { width: clamp(28px, 4.6vh, 36px); aspect-ratio: 1; border-radius: 50%; border: 3px solid var(--panel); margin-left: -8px; display: grid; place-items: center; font-weight: 700; color: #fff; font-size: 0.86rem; font-family: var(--sans); }
-    .p-members .m:first-child { margin-left: 0; }
-    .p-status { margin-top: auto; background: #fff; border-radius: 999px; padding: 2.4% 6%; font-size: clamp(0.7rem, 1.5vh, 0.8rem); font-weight: 600; box-shadow: 0 8px 20px -12px rgba(0,0,0,0.35); }
-    .face.back { transform: rotateY(180deg); background: linear-gradient(158deg, #232325 0%, #0c0c0d 88%); display: grid; place-items: center; }
-    .cam { position: absolute; top: 7%; left: 8%; width: 26%; aspect-ratio: 1; border-radius: 22px; background: #060606; box-shadow: inset 0 0 0 2px #2c2c2e; }
-    .cam i { position: absolute; width: 33%; aspect-ratio: 1; border-radius: 50%; background: #101012; box-shadow: inset 0 0 0 3px #313134, 0 0 8px rgba(255,255,255,0.05); }
-    .cam i:nth-child(1) { top: 12%; left: 12%; } .cam i:nth-child(2) { bottom: 12%; right: 12%; }
-    .cam i:nth-child(3) { top: 12%; right: 12%; width: 18%; background: #1a1a1c; }
-    .back-mark { width: 28%; aspect-ratio: 1; border-radius: 24px; background: rgba(255,255,255,0.06); display: grid; place-items: center; font-family: var(--serif); font-size: clamp(1.8rem, 5vh, 2.6rem); color: rgba(255,255,255,0.92); }
+    .kf-stage { position: absolute; top: 0; left: 0; width: 1920px; height: 1080px; transform-origin: top left; font-family: var(--sans); }
+    .kf-vignette, .kf-flash { position: absolute; inset: 0; }
+    .kf-vignette { background: radial-gradient(circle at 50% 42%, rgba(255,255,255,0.55) 0%, rgba(255,255,255,0) 62%); }
+    .kf-flash { background: #fff; opacity: 0; pointer-events: none; }
+    .kf-cam { position: absolute; inset: 0; }
 
-    @keyframes flip {
-      0%, 6%    { transform: rotateY(-14deg); }
-      28%       { transform: rotateY(14deg); }
-      50%, 58%  { transform: rotateY(194deg); }
-      80%       { transform: rotateY(166deg); }
-      100%      { transform: rotateY(-14deg); }
-    }
+    .kf-radar { position: absolute; left: 960px; top: 540px; opacity: 0; }
+    .kf-ring { position: absolute; border-radius: 50%; }
+    .kf-ring.d1 { left: -450px; top: -450px; width: 900px; height: 900px; border: 2px dashed rgba(17,66,150,0.16); }
+    .kf-ring.d2 { left: -330px; top: -330px; width: 660px; height: 660px; border: 2px solid rgba(17,66,150,0.12); }
+    .kf-ring.d3 { left: -210px; top: -210px; width: 420px; height: 420px; border: 2px dashed rgba(17,66,150,0.16); }
+    .kf-spin-mask { position: absolute; left: -450px; top: -450px; width: 900px; height: 900px; border-radius: 50%; overflow: hidden; }
+    .kf-spin { position: absolute; inset: 0; transform-origin: 50% 50%; background: conic-gradient(from 0deg, rgba(17,66,150,0.14) 0deg, rgba(17,66,150,0.05) 34deg, rgba(17,66,150,0) 104deg); }
+    .kf-hub { position: absolute; left: -82px; top: -82px; width: 164px; height: 164px; }
+    .kf-hub-face { position: absolute; inset: 8px; border-radius: 50%; background: var(--bg); border: 2.5px solid rgba(17,66,150,0.18); box-shadow: 0 5px 24px rgba(17,66,150,0.13); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; }
+    .kf-hub-num { font-family: var(--serif); font-weight: 700; font-size: 40px; letter-spacing: -1px; line-height: 1; color: var(--ink); }
+    .kf-hub-num span { color: #7C8087; }
+    .kf-hub-label { font-weight: 700; font-size: 12px; letter-spacing: 1.6px; color: #7C8087; }
+    .kf-hub svg { position: absolute; left: 0; top: 0; transform: rotate(-90deg); }
+
+    .kf-phone { position: absolute; width: 216px; height: 469px; }
+    .kf-phone-shadow { position: absolute; left: 50%; bottom: -22px; height: 26px; border-radius: 50%; background: rgba(17,66,150,0.16); }
+    .kf-phone-inner { position: absolute; inset: 0; perspective: 1500px; }
+    .kf-phone-face { position: absolute; inset: 0; border-radius: 30px; overflow: hidden; }
+    .kf-phone-face.front { background: var(--bg); border: 1px solid rgba(17,66,150,0.18); box-shadow: 0 18px 44px rgba(17,66,150,0.20); }
+    .kf-phone-face.back { box-shadow: 0 14px 34px rgba(17,66,150,0.24); background: linear-gradient(158deg,#2C4E8C 0%,#1B3667 52%,#122A55 100%); }
+    .kf-screen { position: absolute; inset: 0; background: var(--panel); display: flex; flex-direction: column; padding: 10px 14px 14px; box-sizing: border-box; }
+    .kf-screen .kf-row { display: flex; justify-content: space-between; align-items: center; font: 500 11px var(--sans); color: var(--ink); }
+    .kf-screen .kf-notch { display: block; width: 15px; height: 8px; border: 1.5px solid rgba(17,66,150,0.18); border-radius: 2px; }
+    .kf-screen .kf-nav { margin-top: 8px; display: flex; justify-content: space-between; align-items: center; }
+    .kf-screen .kf-back-btn { width: 22px; height: 22px; border: 1.5px solid rgba(17,66,150,0.18); border-radius: 50%; background: var(--bg); display: flex; align-items: center; justify-content: center; font: 700 11px var(--sans); color: var(--ink); }
+    .kf-screen .kf-wordmark { font: 800 15px var(--sans); color: var(--ink); letter-spacing: -0.4px; }
+    .kf-screen h3 { margin-top: 6px; font: 700 21px var(--serif); font-weight: 700; color: var(--ink); line-height: 1.02; }
+    .kf-screen .kf-hint { margin-top: 2px; font-family: var(--hand); font-size: 14px; color: var(--accent); }
+    .kf-radar-mini { position: relative; flex: 1; }
+    .rm-ring { position: absolute; left: 50%; top: 50%; border-radius: 50%; }
+    .rm-ring.rm-d { width: 150px; height: 150px; margin: -75px 0 0 -75px; border: 1.5px dashed rgba(17,66,150,0.26); }
+    .rm-ring.rm-s { width: 104px; height: 104px; margin: -52px 0 0 -52px; border: 1.5px solid rgba(17,66,150,0.14); }
+    .rm-mask { position: absolute; left: 50%; top: 50%; width: 150px; height: 150px; margin: -75px 0 0 -75px; border-radius: 50%; overflow: hidden; }
+    .rm-spin { position: absolute; inset: 0; transform-origin: 50% 50%; background: conic-gradient(from 0deg, rgba(17,66,150,0.20) 0deg, rgba(17,66,150,0.08) 30deg, rgba(17,66,150,0) 96deg); }
+    .kf-you-chip { position: absolute; left: 50%; top: 50%; margin: -24px 0 0 -19px; transform: rotate(-4deg); background: var(--bg); box-shadow: 0 3px 8px rgba(17,66,150,0.18); padding: 3px 3px 0; }
+    .kf-you-chip .av { width: 38px; height: 38px; background: var(--ink); display: flex; align-items: center; justify-content: center; font: 800 17px var(--sans); color: var(--bg); }
+    .kf-you-chip .lb { height: 15px; text-align: center; font-family: var(--hand); font-size: 13px; color: var(--accent); line-height: 15px; }
+    .kf-pill { padding: 9px 0; background: var(--ink); border-radius: 999px; text-align: center; font: 700 12px var(--sans); color: var(--bg); letter-spacing: -0.2px; box-shadow: 0 3px 10px rgba(17,66,150,0.22); }
+    .kf-back-cam { position: absolute; left: 16px; top: 16px; width: 62px; height: 62px; border-radius: 18px; background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.13); }
+    .kf-back-cam i { position: absolute; width: 20px; height: 20px; border-radius: 50%; background: #0C1E3E; border: 2px solid rgba(255,255,255,0.16); }
+    .kf-back-cam i:nth-child(1) { left: 9px; top: 9px; }
+    .kf-back-cam i:nth-child(2) { left: 33px; top: 33px; }
+    .kf-back-mark { position: absolute; left: 0; right: 0; top: 50%; margin-top: -12px; text-align: center; font: 800 24px var(--sans); color: rgba(250,249,241,0.30); letter-spacing: -1px; }
+    .kf-back-mark span { color: rgba(246,110,34,0.55); }
+    .kf-back-sheen { position: absolute; inset: 0; background: linear-gradient(122deg, rgba(255,255,255,0.16) 0%, rgba(255,255,255,0) 42%); }
+    .kf-tag { position: absolute; left: 50%; top: 50%; white-space: nowrap; margin-left: -40px; font-family: var(--hand); font-size: 26px; color: var(--accent); opacity: 0; }
+    .kf-ready { position: absolute; left: 50%; top: 50%; margin-left: -46px; padding: 5px 12px; background: #7AE582; border: 1.5px solid rgba(17,66,150,0.18); border-radius: 999px; font: 700 12px var(--sans); letter-spacing: 1.4px; color: var(--ink); white-space: nowrap; opacity: 0; }
+
+    .kf-polaroid { position: absolute; left: 728px; top: 208px; width: 464px; height: 552px; background: var(--bg); padding: 20px 20px 0; box-sizing: border-box; box-shadow: 0 26px 60px rgba(17,66,150,0.22); opacity: 0; }
+    .kf-polaroid .photo { position: relative; width: 424px; height: 424px; overflow: hidden; background: #0B0B0B; }
+    .kf-polaroid .photo img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+    .kf-polaroid .develop { position: absolute; inset: 0; background: #F7F4E9; }
+    .kf-polaroid .cap { height: 108px; display: flex; align-items: center; justify-content: center; font-family: var(--hand); font-size: 34px; color: var(--accent); transform: rotate(-2deg); }
+
+    .kf-jar { position: absolute; left: 790px; top: 596px; width: 340px; height: 344px; opacity: 0; }
+    .kf-jar-sqA, .kf-jar-sqB { position: absolute; left: 0; right: 0; top: 30px; bottom: 0; transform-origin: 50% 100%; }
+    .kf-jar-sqB { pointer-events: none; }
+    .kf-jar-body { position: absolute; inset: 0; border-radius: 18px 18px 40px 40px; background: linear-gradient(100deg, rgba(255,255,255,0.72) 0%, rgba(250,249,241,0.42) 46%, rgba(224,229,240,0.55) 100%); }
+    .kf-jar-candies { position: absolute; left: 0; right: 0; bottom: 8px; height: 178px; overflow: hidden; }
+    .kf-jar-candies img { position: absolute; }
+    .kf-jar-bear { position: absolute; left: 96px; top: -300px; width: 148px; opacity: 0; filter: drop-shadow(0 10px 16px rgba(17,66,150,0.24)); }
+    .kf-jar-rim1 { position: absolute; inset: 0; border-radius: 18px 18px 40px 40px; border: 5px solid rgba(17,66,150,0.22); border-top: none; box-sizing: border-box; }
+    .kf-jar-sheen1 { position: absolute; left: 26px; top: 26px; width: 24px; bottom: 76px; border-radius: 999px; background: linear-gradient(180deg, rgba(255,255,255,0.9), rgba(255,255,255,0)); }
+    .kf-jar-sheen2 { position: absolute; right: 34px; top: 46px; width: 12px; bottom: 120px; border-radius: 999px; background: linear-gradient(180deg, rgba(255,255,255,0.55), rgba(255,255,255,0)); }
+    .kf-jar-lid { position: absolute; left: -6px; top: 4px; width: 352px; height: 56px; border-radius: 50%; border: 5px solid rgba(17,66,150,0.22); background: rgba(250,249,241,0.30); box-sizing: border-box; transform-origin: 50% 100%; }
+    .kf-jar-glow { position: absolute; left: -24px; bottom: -22px; width: 388px; height: 34px; border-radius: 50%; background: rgba(17,66,150,0.13); filter: blur(15px); }
+    .kf-jar-tag { position: absolute; left: 316px; top: 44px; white-space: nowrap; transform-origin: 0% 50%; opacity: 0; }
+    .kf-jar-tag span { padding: 8px 18px; background: #F6B93B; border: 2.5px solid rgba(17,66,150,0.18); box-shadow: 0 4px 14px rgba(17,66,150,0.16); font-family: var(--hand); font-size: 34px; color: var(--ink); display: inline-block; }
+
+    .kf-close { position: absolute; left: 0; right: 0; top: 132px; text-align: center; opacity: 0; }
+    .kf-close .word { font: 800 76px var(--sans); letter-spacing: -2px; color: var(--ink); }
+    .kf-close .word span { color: var(--accent); }
+    .kf-close .tagline { margin-top: 10px; font: 700 34px var(--serif); color: var(--ink); letter-spacing: -0.5px; }
+
+    .kf-caption { position: absolute; left: 8%; right: 8%; bottom: 7%; text-align: center; font-family: var(--hand); font-size: 40px; color: var(--accent); pointer-events: none; opacity: 0; }
+
     @media (prefers-reduced-motion: reduce) {
-      .phone3d { animation: none; transform: rotateY(-10deg); }
+      .kf-radar, .kf-tag, .kf-ready, .kf-polaroid, .kf-caption { display: none; }
     }
 
     /* ---------- Footer ---------- */
@@ -131,16 +177,50 @@
 
   <!-- CENTER: flipping phone + one line below -->
   <main class="main">
-    <div class="stage" aria-hidden="true">
-      <div class="phone3d">
-        <!-- back of the phone -->
-        <div class="face back">
-          <div class="cam"><i></i><i></i><i></i></div>
+    <div class="kf-wrap" id="kfWrap" aria-hidden="true">
+      <div class="kf-stage" id="kfStage">
+        <div class="kf-vignette"></div>
+        <div class="kf-cam" id="kfCam">
+          <div class="kf-radar" id="kfRadar">
+            <div class="kf-ring d1"></div>
+            <div class="kf-ring d2"></div>
+            <div class="kf-ring d3"></div>
+            <div class="kf-spin-mask"><div class="kf-spin" id="kfSpin1"></div></div>
+            <div class="kf-hub" id="kfHub">
+              <div class="kf-hub-face">
+                <div class="kf-hub-num" id="kfHubNum">0<span>/4</span></div>
+                <div class="kf-hub-label" id="kfHubLabel">FRIENDS</div>
+              </div>
+              <svg width="164" height="164"><circle cx="82" cy="82" r="62" fill="none" stroke="rgba(17,66,150,0.10)" stroke-width="5" /><circle cx="82" cy="82" r="62" fill="none" stroke-width="5" stroke-linecap="round" id="kfHubCircle" /></svg>
+            </div>
+          </div>
+          <div id="kfPhones"></div>
+          <div class="kf-jar" id="kfJar">
+            <div class="kf-jar-sqA" id="kfJarSqA">
+              <div class="kf-jar-body"></div>
+              <div class="kf-jar-candies" id="kfJarCandies"></div>
+            </div>
+            <img class="kf-jar-bear" id="kfBear" src="hero-anim/gummy-bear.webp" alt="" />
+            <div class="kf-jar-sqB" id="kfJarSqB">
+              <div class="kf-jar-rim1"></div>
+              <div class="kf-jar-sheen1"></div>
+              <div class="kf-jar-sheen2"></div>
+            </div>
+            <div class="kf-jar-lid" id="kfJarLid"></div>
+            <div class="kf-jar-glow"></div>
+            <div class="kf-jar-tag" id="kfJarTag"><span>+1 memory &#10022;</span></div>
+          </div>
+          <div class="kf-polaroid" id="kfPolaroid">
+            <div class="photo"><img src="hero-anim/bear-selfie.webp" alt="" /><div class="develop" id="kfDevelop"></div></div>
+            <div class="cap">us, tonight &#10022;</div>
+          </div>
         </div>
-        <!-- front / app screen -->
-        <div class="face front">
-          <img class="scr-img" src="screens/present.png" alt="minti app — together time" />
+        <div class="kf-close" id="kfClose">
+          <div class="word">min<span>:</span>ti</div>
+          <div class="tagline">Put the phone down. Keep the moment.</div>
         </div>
+        <div class="kf-flash" id="kfFlash"></div>
+        <div class="kf-caption" id="kfCaption"></div>
       </div>
     </div>
     <h1 class="headline">Make time <span class="it">together.</span></h1>
@@ -160,39 +240,328 @@
 
   <script>
     (function () {
-      const el = document.querySelector('.scr-img');
-      const phone = document.querySelector('.phone3d');
-      if (!el || !phone) return;
+      const wrap = document.getElementById('kfWrap');
+      const stage = document.getElementById('kfStage');
+      if (!wrap || !stage) return;
 
-      // Each screenshot gets its own framing (zoom + vertical nudge) so the
-      // phone shows the app screen, not the full marketing poster.
-      const shots = [
-        { src: 'present.png',    s: 1.55, ty: -6 },
-        { src: 'topfriends.png', s: 1.45, ty: -9 },
-        { src: 'candybook.png',  s: 1.5,  ty: -8 },
-        { src: 'remembered.png', s: 1.45, ty: -8 },
-        { src: 'gather.png',     s: 1.45, ty: -8 },
-        { src: 'jar.png',        s: 1.5,  ty: -4 },
-      ];
-
-      shots.forEach(sh => { const im = new Image(); im.src = 'screens/' + sh.src; });
-
-      let i = 0;
-      const apply = (n) => {
-        const sh = shots[n];
-        el.src = 'screens/' + sh.src;
-        el.style.transform = 'scale(' + sh.s + ') translateY(' + sh.ty + '%)';
+      /* ---- easing + interpolation, ported from the source composition engine ---- */
+      const Easing = {
+        linear: (t) => t,
+        easeInQuad: (t) => t * t,
+        easeOutQuad: (t) => t * (2 - t),
+        easeInOutSine: (t) => -(Math.cos(Math.PI * t) - 1) / 2,
+        easeOutCubic: (t) => (--t) * t * t + 1,
+        easeOutBack: (t) => { const c1 = 1.70158, c3 = c1 + 1; return 1 + c3 * Math.pow(t - 1, 3) + c1 * Math.pow(t - 1, 2); },
       };
-      apply(0);
+      function interpolate(input, output, ease) {
+        ease = ease || Easing.linear;
+        return (t) => {
+          if (t <= input[0]) return output[0];
+          if (t >= input[input.length - 1]) return output[output.length - 1];
+          for (let i = 0; i < input.length - 1; i++) {
+            if (t >= input[i] && t <= input[i + 1]) {
+              const span = input[i + 1] - input[i];
+              const local = span === 0 ? 0 : (t - input[i]) / span;
+              return output[i] + (output[i + 1] - output[i]) * ease(local);
+            }
+          }
+          return output[output.length - 1];
+        };
+      }
+      function animate(o) {
+        const from = o.from, to = o.to, start = o.start, end = o.end, ease = o.ease || Easing.linear;
+        return (t) => {
+          if (t <= start) return from;
+          if (t >= end) return to;
+          return from + (to - from) * ease((t - start) / (end - start));
+        };
+      }
+      const MOTION = {
+        enter: (o) => animate(Object.assign({ ease: Easing.easeOutCubic }, o)),
+        pop: (o) => animate(Object.assign({ ease: Easing.easeOutBack }, o)),
+        fall: (o) => animate(Object.assign({ ease: Easing.easeInQuad }, o)),
+      };
 
-      // The flip animation is 8.5s; the phone shows its BACK around the middle
-      // of the cycle. animationiteration fires when it returns to the front, so
-      // we swap ~0.54 into the next cycle (back facing) and the new shot is
-      // already in place when it flips forward again.
-      const DUR = 8500;
-      phone.addEventListener('animationiteration', () => {
-        setTimeout(() => { i = (i + 1) % shots.length; apply(i); }, DUR * 0.54);
+      /* ---- scene data, ported from Minti Key Feature (2) ---- */
+      const CUES = { Gather: 0, Flip: 2.8, Flash: 6.8, Photo: 8.0, Candy: 10.8, Close: 14.2 };
+      const END = 16.0;
+      const LAND = CUES.Candy + 1.75;
+      const PW = 216, PH = 469;
+      const PHONES = [
+        { idx: 0, order: 0, x: 396, y: 300, rot: -12, initial: 'J', tag: 'you', tdx: 0, tdy: 268 },
+        { idx: 1, order: 1, x: 1524, y: 296, rot: 11, initial: 'M', tag: 'Maya', tdx: 0, tdy: 268 },
+        { idx: 2, order: 3, x: 556, y: 796, rot: 8, initial: 'L', tag: 'Leo', tdx: -150, tdy: -50 },
+        { idx: 3, order: 2, x: 1364, y: 792, rot: -9, initial: 'R', tag: 'Rin', tdx: 150, tdy: -50 },
+      ];
+      const JAR_CANDIES = [
+        { src: 'hero-anim/candy-13.webp', x: 16, y: 6, w: 94, r: -12 },
+        { src: 'hero-anim/candy-27.webp', x: 108, y: 0, w: 88, r: 9 },
+        { src: 'hero-anim/candy-33.webp', x: 198, y: 8, w: 86, r: -6 },
+        { src: 'hero-anim/candy-05.webp', x: 60, y: 74, w: 84, r: 14 },
+        { src: 'hero-anim/candy-58.webp', x: 150, y: 80, w: 90, r: -10 },
+        { src: 'hero-anim/candy-22.webp', x: 232, y: 82, w: 74, r: 16 },
+        { src: 'hero-anim/candy-09.webp', x: 24, y: 92, w: 70, r: -18 },
+      ];
+      const R = 62, CIRC = 2 * Math.PI * R;
+
+      /* ---- build phone DOM ---- */
+      const phonesRoot = document.getElementById('kfPhones');
+      const phoneEls = PHONES.map((p) => {
+        const el = document.createElement('div');
+        el.className = 'kf-phone';
+        el.style.left = (p.x - PW / 2) + 'px';
+        el.style.top = (p.y - PH / 2) + 'px';
+        el.innerHTML =
+          '<div class="kf-phone-shadow" data-shadow></div>' +
+          '<div class="kf-phone-inner" data-inner>' +
+            '<div class="kf-phone-face front" data-front>' +
+              '<div class="kf-screen">' +
+                '<div class="kf-row"><span>9:41</span><span class="kf-notch"></span></div>' +
+                '<div class="kf-nav"><span class="kf-back-btn">&larr;</span><span class="kf-wordmark">m:t</span></div>' +
+                '<h3>Everyone&rsquo;s here.</h3>' +
+                '<p class="kf-hint">flip it face down to start &#10022;</p>' +
+                '<div class="kf-radar-mini">' +
+                  '<span class="rm-ring rm-d"></span><span class="rm-ring rm-s"></span>' +
+                  '<div class="rm-mask"><div class="rm-spin" data-rm-spin></div></div>' +
+                  '<div class="kf-you-chip"><div class="av">' + p.initial + '</div><div class="lb">you</div></div>' +
+                '</div>' +
+                '<div class="kf-pill">Flip to start</div>' +
+              '</div>' +
+            '</div>' +
+            '<div class="kf-phone-face back" data-back>' +
+              '<div class="kf-back-cam"><i></i><i></i></div>' +
+              '<div class="kf-back-mark">min<span>:</span>ti</div>' +
+              '<div class="kf-back-sheen"></div>' +
+            '</div>' +
+          '</div>' +
+          '<div class="kf-tag" data-tag>' + p.tag + '</div>' +
+          '<div class="kf-ready" data-ready>FACE DOWN</div>';
+        phonesRoot.appendChild(el);
+        return {
+          p: p,
+          root: el,
+          shadow: el.querySelector('[data-shadow]'),
+          inner: el.querySelector('[data-inner]'),
+          front: el.querySelector('[data-front]'),
+          back: el.querySelector('[data-back]'),
+          rmSpin: el.querySelector('[data-rm-spin]'),
+          tag: el.querySelector('[data-tag]'),
+          ready: el.querySelector('[data-ready]'),
+        };
       });
+
+      /* ---- build jar candies ---- */
+      const jarCandiesRoot = document.getElementById('kfJarCandies');
+      const candyEls = JAR_CANDIES.map((c, k) => {
+        const img = document.createElement('img');
+        img.src = c.src; img.alt = '';
+        img.style.left = c.x + 'px';
+        img.style.width = c.w + 'px';
+        img.style.transform = 'rotate(' + c.r + 'deg)';
+        jarCandiesRoot.appendChild(img);
+        return { c: c, k: k, el: img };
+      });
+
+      /* ---- static refs ---- */
+      const camEl = document.getElementById('kfCam');
+      const radarEl = document.getElementById('kfRadar');
+      const spin1El = document.getElementById('kfSpin1');
+      const hubEl = document.getElementById('kfHub');
+      const hubNumEl = document.getElementById('kfHubNum');
+      const hubLabelEl = document.getElementById('kfHubLabel');
+      const hubCircleEl = document.getElementById('kfHubCircle');
+      const jarEl = document.getElementById('kfJar');
+      const jarSqA = document.getElementById('kfJarSqA');
+      const jarSqB = document.getElementById('kfJarSqB');
+      const jarLid = document.getElementById('kfJarLid');
+      const bearEl = document.getElementById('kfBear');
+      const jarTagEl = document.getElementById('kfJarTag');
+      const polaroidEl = document.getElementById('kfPolaroid');
+      const developEl = document.getElementById('kfDevelop');
+      const closeEl = document.getElementById('kfClose');
+      const flashEl = document.getElementById('kfFlash');
+      const captionEl = document.getElementById('kfCaption');
+      hubCircleEl.setAttribute('stroke-dasharray', CIRC.toFixed(2));
+
+      const CAPTIONS = [
+        { at: 1.05, until: CUES.Flip + 0.1, text: 'four phones. one table.' },
+        { at: CUES.Flip + 0.45, until: CUES.Flash, text: 'flip them face down →' },
+        { at: CUES.Photo + 0.55, until: CUES.Candy + 0.2, text: 'minti gives the moment back' },
+        { at: CUES.Candy + 1.2, until: CUES.Close, text: 'one session = one candy' },
+      ];
+      const CAPTION_FADE = 0.18;
+
+      /* ---- per-frame render ---- */
+      function render(T) {
+        const flipped = PHONES.filter((p) => T >= CUES.Flip + 0.25 + p.order * 0.82 + 0.62).length;
+
+        const camS = interpolate(
+          [0, CUES.Flip, CUES.Flash, CUES.Flash + 0.5, CUES.Candy, CUES.Candy + 1.6, END],
+          [1.02, 1.06, 1.13, 1.00, 1.10, 1.06, 1.02], Easing.easeInOutSine)(T);
+        const camY = interpolate(
+          [0, CUES.Flash + 0.5, CUES.Candy, CUES.Candy + 1.6, END],
+          [0, 0, 26, -84, 0], Easing.easeInOutSine)(T);
+        const flashA = interpolate(
+          [CUES.Flash + 0.16, CUES.Flash + 0.26, CUES.Flash + 0.34, CUES.Flash + 0.40, CUES.Flash + 0.46, CUES.Flash + 0.98],
+          [0, 0.96, 0.55, 1, 0.92, 0], Easing.linear)(T);
+        const inAll = MOTION.enter({ from: 0, to: 1, start: 0, end: 0.35 })(T);
+        const outAll = MOTION.enter({ from: 1, to: 0, start: END - 0.75, end: END - 0.05 })(T);
+
+        camEl.style.opacity = inAll * outAll;
+        camEl.style.transform = 'translateY(' + camY + 'px) scale(' + camS + ')';
+        flashEl.style.opacity = flashA;
+
+        /* table radar */
+        const rO = MOTION.enter({ from: 0, to: 1, start: 0.05, end: 0.9 })(T)
+          * MOTION.enter({ from: 1, to: 0, start: CUES.Flash - 0.25, end: CUES.Flash + 0.30 })(T);
+        const rSpin = (T * 62) % 360;
+        const rGrow = MOTION.enter({ from: 0.82, to: 1, start: 0.05, end: 1.1 })(T);
+        const done = flipped >= 4;
+        const hubPop = MOTION.pop({ from: 0.86, to: 1, start: 0.5, end: 1.1 })(T);
+        radarEl.style.opacity = rO;
+        radarEl.querySelectorAll('.kf-ring').forEach((r) => { r.style.transform = 'scale(' + rGrow + ')'; });
+        spin1El.style.transform = 'rotate(' + rSpin + 'deg)';
+        hubEl.style.transform = 'scale(' + hubPop + ')';
+        hubNumEl.innerHTML = flipped + '<span>/4</span>';
+        hubNumEl.style.color = done ? 'var(--ink)' : '';
+        hubLabelEl.textContent = done ? 'LIVE' : 'FRIENDS';
+        hubLabelEl.style.color = done ? '#7AE582' : '#7C8087';
+        hubCircleEl.setAttribute('stroke', done ? '#7AE582' : '#114296');
+        hubCircleEl.setAttribute('stroke-dashoffset', (CIRC * (1 - flipped / 4)).toFixed(2));
+
+        /* phones */
+        phoneEls.forEach((pe) => {
+          const p = pe.p;
+          const t0 = 0.18 + p.idx * 0.15;
+          const inO = MOTION.enter({ from: 0, to: 1, start: t0, end: t0 + 0.45 })(T);
+          const inY = MOTION.pop({ from: -74, to: 0, start: t0, end: t0 + 0.85 })(T);
+          const inS = MOTION.pop({ from: 0.84, to: 1, start: t0, end: t0 + 0.85 })(T);
+
+          const fs = CUES.Flip + 0.25 + p.order * 0.82;
+          const flip = MOTION.enter({ from: 0, to: 180, start: fs + 0.16, end: fs + 0.78 })(T);
+          const lift = interpolate([fs, fs + 0.26, fs + 0.56, fs + 0.9], [0, -46, -12, 0], Easing.easeInOutSine)(T);
+          const settle = interpolate([fs + 0.78, fs + 0.94, fs + 1.1], [1, 0.955, 0.972], Easing.easeOutQuad)(T);
+          const outO = MOTION.enter({ from: 1, to: 0, start: CUES.Flash + 0.40, end: CUES.Flash + 0.60 })(T);
+
+          const nameO = MOTION.enter({ from: 0, to: 1, start: t0 + 0.4, end: t0 + 0.8 })(T)
+            * MOTION.enter({ from: 1, to: 0, start: fs - 0.1, end: fs + 0.25 })(T);
+          const readyO = MOTION.pop({ from: 0, to: 1, start: fs + 0.66, end: fs + 0.92 })(T) * outO;
+          const readyS = MOTION.pop({ from: 0.5, to: 1, start: fs + 0.66, end: fs + 0.95 })(T);
+
+          const back = flip >= 90;
+          const shade = 1 + (-lift / 46) * 0.35;
+          const spin = (T * 84) % 360;
+
+          pe.root.style.opacity = inO * outO;
+          pe.shadow.style.width = (PW * 0.82 * shade) + 'px';
+          pe.shadow.style.marginLeft = -(PW * 0.82 * shade) / 2 + 'px';
+          pe.shadow.style.filter = 'blur(' + (10 + (-lift / 46) * 8) + 'px)';
+          pe.shadow.style.opacity = 0.9 - (-lift / 46) * 0.35;
+          pe.inner.style.transform = 'rotate(' + p.rot + 'deg) translateY(' + (inY + lift) + 'px) scale(' + (inS * settle) + ')';
+          pe.front.style.opacity = back ? 0 : 1;
+          pe.front.style.transform = 'rotateX(' + flip + 'deg)';
+          pe.back.style.opacity = back ? 1 : 0;
+          pe.back.style.transform = 'rotateX(' + (flip - 180) + 'deg)';
+          pe.rmSpin.style.transform = 'rotate(' + spin + 'deg)';
+          pe.tag.style.transform = 'translate(' + p.tdx + 'px,' + p.tdy + 'px) rotate(-3deg)';
+          pe.tag.style.opacity = nameO;
+          pe.ready.style.transform = 'translate(' + p.tdx + 'px,' + (p.tdy - 4) + 'px) scale(' + readyS + ')';
+          pe.ready.style.opacity = readyO;
+        });
+
+        /* polaroid */
+        const s0 = CUES.Flash + 0.52;
+        const pO = MOTION.enter({ from: 0, to: 1, start: s0, end: s0 + 0.28 })(T);
+        const drop = MOTION.pop({ from: -70, to: 0, start: s0, end: s0 + 0.9 })(T);
+        const sc = MOTION.pop({ from: 0.72, to: 1, start: s0, end: s0 + 0.9 })(T);
+        const rot = interpolate([s0, s0 + 0.9, CUES.Candy + 0.5], [-9, -3.2, 6], Easing.easeInOutSine)(T);
+        const develop = MOTION.enter({ from: 1, to: 0, start: s0 + 0.25, end: s0 + 1.5 })(T);
+        const mSt = CUES.Candy + 0.15, mEn = CUES.Candy + 0.85;
+        const morphS = MOTION.enter({ from: 1, to: 0.14, start: mSt, end: mEn })(T);
+        const morphO = MOTION.enter({ from: 1, to: 0, start: mSt + 0.3, end: mEn })(T);
+        const morphY = MOTION.enter({ from: 0, to: -134, start: mSt, end: mEn })(T);
+        polaroidEl.style.opacity = pO * morphO;
+        polaroidEl.style.transform = 'translateY(' + (drop + morphY) + 'px) rotate(' + rot + 'deg) scale(' + (sc * morphS) + ')';
+        developEl.style.opacity = develop;
+
+        /* jar rig */
+        const rise = MOTION.enter({ from: 560, to: 0, start: CUES.Candy + 0.1, end: CUES.Candy + 1.15 })(T);
+        const jO = MOTION.enter({ from: 0, to: 1, start: CUES.Candy + 0.1, end: CUES.Candy + 0.5 })(T);
+        const sq = interpolate([LAND, LAND + 0.10, LAND + 0.26, LAND + 0.48], [1, 0.93, 1.035, 1], Easing.easeOutQuad)(T);
+        const jig = interpolate([LAND, LAND + 0.14, LAND + 0.3, LAND + 0.52], [0, 7, -3, 0], Easing.easeOutQuad)(T);
+        const squashT = 'scaleY(' + sq + ') scaleX(' + (2 - sq) + ')';
+        jarEl.style.opacity = jO;
+        jarEl.style.transform = 'translateY(' + rise + 'px)';
+        jarSqA.style.transform = squashT;
+        jarSqB.style.transform = squashT;
+        jarLid.style.transform = squashT;
+
+        candyEls.forEach((ce) => {
+          const j = ce.k % 2 ? jig : jig * 0.55;
+          ce.el.style.bottom = (ce.c.y + j) + 'px';
+        });
+
+        const bMEn = CUES.Candy + 0.85;
+        const born = MOTION.pop({ from: 0.18, to: 1, start: CUES.Candy + 0.55, end: bMEn + 0.14 })(T);
+        const bearO = MOTION.enter({ from: 0, to: 1, start: CUES.Candy + 0.55, end: bMEn })(T);
+        const by = MOTION.fall({ from: 0, to: 392, start: bMEn + 0.16, end: LAND })(T);
+        const brot = interpolate([bMEn, LAND, LAND + 0.5], [-15, 9, 4], Easing.easeInOutSine)(T);
+        const bsq = interpolate([LAND - 0.05, LAND + 0.05, LAND + 0.2], [1, 0.8, 1], Easing.easeOutQuad)(T);
+        bearEl.style.opacity = bearO;
+        bearEl.style.transform = 'translateY(' + by + 'px) rotate(' + brot + 'deg) scale(' + born + ') scaleY(' + bsq + ') scaleX(' + (2 - bsq) + ')';
+
+        const tagO = MOTION.pop({ from: 0, to: 1, start: LAND + 0.3, end: LAND + 0.62 })(T);
+        const tagS = MOTION.pop({ from: 0.55, to: 1, start: LAND + 0.3, end: LAND + 0.68 })(T);
+        jarTagEl.style.opacity = tagO;
+        jarTagEl.style.transform = 'rotate(-6deg) scale(' + tagS + ')';
+
+        /* closing wordmark */
+        const wordO = MOTION.enter({ from: 0, to: 1, start: CUES.Close + 0.05, end: CUES.Close + 0.6 })(T);
+        const wordY = MOTION.enter({ from: 22, to: 0, start: CUES.Close + 0.05, end: CUES.Close + 0.7 })(T);
+        closeEl.style.opacity = wordO * outAll;
+        closeEl.style.transform = 'translateY(' + wordY + 'px)';
+
+        /* captions */
+        let active = null, until = Infinity;
+        for (let i = 0; i < CAPTIONS.length; i++) {
+          if (T < CAPTIONS[i].at) break;
+          active = CAPTIONS[i];
+          until = active.until;
+        }
+        if (active && T < until) {
+          let o = Math.min(1, (T - active.at) / CAPTION_FADE);
+          o = Math.min(o, (until - T) / CAPTION_FADE);
+          captionEl.style.opacity = Math.max(0, Math.min(1, o));
+          captionEl.textContent = active.text;
+        } else {
+          captionEl.style.opacity = 0;
+        }
+      }
+
+      /* ---- responsive scale ---- */
+      function fit() {
+        const s = wrap.clientWidth / 1920;
+        stage.style.transform = 'scale(' + s + ')';
+      }
+      window.addEventListener('resize', fit);
+      fit();
+
+      /* ---- reduced motion: freeze on the closing frame ---- */
+      const reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (reduced) {
+        render(15.0);
+        return;
+      }
+
+      /* ---- play loop ---- */
+      let startTime = null;
+      function tick(now) {
+        if (startTime === null) startTime = now;
+        const T = ((now - startTime) / 1000) % END;
+        render(T);
+        requestAnimationFrame(tick);
+      }
+      requestAnimationFrame(tick);
     })();
   </script>
 </body>

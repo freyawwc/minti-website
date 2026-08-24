@@ -48,6 +48,20 @@ def encode_screens():
     return assets
 
 
+def encode_hero_anim():
+    """Inline the hero animation's already-optimized WebP assets as-is."""
+    assets = {}
+    src = os.path.join(ROOT, "hero-anim")
+    if not os.path.isdir(src):
+        return assets
+    for name in sorted(os.listdir(src)):
+        if not name.lower().endswith(".webp"):
+            continue
+        raw = open(os.path.join(src, name), "rb").read()
+        assets[name] = "data:image/webp;base64," + base64.b64encode(raw).decode()
+    return assets
+
+
 # Injected into every page: resolves screens/* to the inlined data URIs and
 # hands link clicks up to the preview shell.
 SHIM = """
@@ -58,7 +72,7 @@ SHIM = """
   var A = (window.parent && window.parent.__MINTI_ASSETS) || {};
   function map(u) {
     if (typeof u !== 'string') return u;
-    var m = u.match(/screens\\/([^\\/?#]+)$/);
+    var m = u.match(/(?:screens|hero-anim)\\/([^\\/?#]+)$/);
     return (m && A[m[1]]) ? A[m[1]] : u;
   }
   // index.html swaps the phone screenshot from JS, so map assignments too.
@@ -99,9 +113,9 @@ def build_page(name, css, assets):
     html = re.sub(r'<link[^>]+href="styles\.css"[^>]*>',
                   lambda _m: "<style>\n" + css + "\n</style>", html)
 
-    # Static screenshot references.
-    html = re.sub(r'(src=")(?:\./)?screens/([^"]+)(")',
-                  lambda m: m.group(1) + assets.get(m.group(2), "screens/" + m.group(2)) + m.group(3),
+    # Static screenshot / hero-anim image references.
+    html = re.sub(r'(src=")(?:\./)?(screens|hero-anim)/([^"]+)(")',
+                  lambda m: m.group(1) + assets.get(m.group(3), m.group(2) + "/" + m.group(3)) + m.group(4),
                   html)
 
     m = re.search(r"<head[^>]*>", html)
@@ -115,6 +129,7 @@ def build_page(name, css, assets):
 def main():
     print("Inlining screenshots...")
     assets = encode_screens()
+    assets.update(encode_hero_anim())
     css = open(os.path.join(ROOT, "styles.css"), encoding="utf-8").read()
 
     pages = {n: build_page(n, css, assets) for n in PAGES}
